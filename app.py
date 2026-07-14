@@ -13,11 +13,19 @@ from reportlab.graphics.shapes import Drawing, Circle, String
 from auth import auth
 from admin import admin
 from database.db_all import db, User, Quizes, history, Questions, DailyChallengeHistory, ShopItem, UserPurchase
+import os
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'secret_key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/quiz'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'secret_key')
+
+database_url = os.getenv("DATABASE_URL")
+
+if database_url:
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = database_url or "mysql+pymysql://root:@localhost/quiz"
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
@@ -1052,4 +1060,4 @@ def admin_delete_user(user_id):
     return redirect(url_for('admin_users'))
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run()
