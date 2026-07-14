@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% block title %}Account Settings - QuizMaster Pro{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6 pb-12 animate-[fadeInUp_0.4s_ease-out]">
+
+    <div class="border-b dark:border-slate-800 pb-3">
+        <h1 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight">Settings</h1>
+        <p class="text-sm text-slate-400 mt-0.5">Manage your application profile preferences, interface configurations, and operational states.</p>
+    </div>
+
+
+    <div class="glass p-6 rounded-[2rem] border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 shadow-sm space-y-6">
+        <div class="flex items-center justify-between border-b dark:border-slate-800 pb-4">
+            <h2 class="text-base font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                <i data-lucide="zap" class="w-5 h-5 text-primary"></i> Motion & Transitions
+            </h2>
+        </div>
+        <div class="flex items-center justify-between text-xs font-semibold">
+            <div>
+                <h3 class="font-black text-slate-800 dark:text-white text-sm">Enable Interface Animations</h3>
+                <p class="text-slate-400 font-normal mt-0.5">Control global structural visual transformations, transitions, and dynamic motion states.</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer select-none">
+                <input type="checkbox" id="setting_animations" class="sr-only peer">
+                <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+            </label>
+        </div>
+    </div>
+
+    <div class="glass p-6 rounded-[2rem] border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 shadow-sm space-y-6">
+        <div class="flex items-center justify-between border-b dark:border-slate-800 pb-4">
+            <h2 class="text-base font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                <i data-lucide="layout-sidebar" class="w-5 h-5 text-primary"></i> Navigation Layout
+            </h2>
+        </div>
+        <div class="flex items-center justify-between text-xs font-semibold">
+            <div>
+                <h3 class="font-black text-slate-800 dark:text-white text-sm">Collapse Sidebar by Default</h3>
+                <p class="text-slate-400 font-normal mt-0.5">Minimize the lateral primary system tracking interface panel layout structural bounds automatically.</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer select-none">
+                <input type="checkbox" id="setting_sidebar" class="sr-only peer">
+                <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+            </label>
+        </div>
+    </div>
+
+    <div class="glass p-6 rounded-[2rem] border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b dark:border-slate-800 pb-4">
+            <h2 class="text-base font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                <i data-lucide="sliders" class="w-5 h-5 text-primary"></i> Assessment Rule Configurations
+            </h2>
+        </div>
+        <div class="space-y-4 text-xs font-semibold">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-black text-slate-800 dark:text-white">Enable Quiz Sounds</h3>
+                    <p class="text-slate-400 font-normal mt-0.5">Trigger standard interactive auditory orchestration loops during verification milestones.</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer select-none">
+                    <input type="checkbox" id="setting_quiz_sounds" class="sr-only peer">
+                    <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                </label>
+            </div>
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-black text-slate-800 dark:text-white">Auto Submit on Timer End</h3>
+                    <p class="text-slate-400 font-normal mt-0.5">Force mechanical metric collection submittal loops processing when baseline boundaries expire.</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer select-none">
+                    <input type="checkbox" id="setting_auto_submit" class="sr-only peer">
+                    <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass p-6 rounded-[2rem] border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 shadow-sm space-y-6">
+        <div class="flex items-center justify-between border-b dark:border-slate-800 pb-4">
+            <h2 class="text-base font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-2">
+                <i data-lucide="bell" class="w-5 h-5 text-primary"></i> Alerting Services
+            </h2>
+        </div>
+        <div class="flex items-center justify-between text-xs font-semibold">
+            <div>
+                <h3 class="font-black text-slate-800 dark:text-white text-sm">Enable System Notifications</h3>
+                <p class="text-slate-400 font-normal mt-0.5">Allow context notification banner messaging loops across dynamic execution parameters updates.</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer select-none">
+                <input type="checkbox" id="setting_notifications" class="sr-only peer">
+                <div class="w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+            </label>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const settingsMap = {
+        'setting_dark_mode': 'app_dark_mode',
+        'setting_animations': 'app_animations',
+        'setting_sidebar': 'app_sidebar_collapsed',
+        'setting_quiz_sounds': 'app_quiz_sounds',
+        'setting_auto_submit': 'app_auto_submit',
+        'setting_notifications': 'app_notifications'
+    };
+
+    function loadSettings() {
+        Object.keys(settingsMap).forEach(id => {
+            const storageKey = settingsMap[id];
+            const savedValue = localStorage.getItem(storageKey);
+            const element = document.getElementById(id);
+            
+            if (element) {
+                if (savedValue !== null) {
+                    element.checked = savedValue === 'true';
+                } else {
+                    element.checked = id === 'setting_animations' || id === 'setting_quiz_sounds' || id === 'setting_notifications';
+                }
+                applySettingState(id, element.checked);
+            }
+        });
+    }
+
+    function applySettingState(id, isChecked) {
+        if (id === 'setting_dark_mode') {
+            if (isChecked) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+    }
+
+    function bindEvents() {
+        Object.keys(settingsMap).forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.addEventListener('change', function() {
+                    const storageKey = settingsMap[id];
+                    localStorage.setItem(storageKey, this.checked);
+                    applySettingState(id, this.checked);
+                });
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadSettings();
+        bindEvents();
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    });
+</script>
+{% endblock %}

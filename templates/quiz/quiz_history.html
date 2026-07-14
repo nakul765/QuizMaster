@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}Quiz History - QuizMaster Pro{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-6 pb-12 animate-[fadeInUp_0.4s_ease-out]">
+
+    <div class="text-xs text-slate-400 dark:text-slate-500">
+        Home / <span class="text-primary font-bold">Quiz History</span>
+    </div>
+
+    <div
+        class="p-6 glass rounded-[2rem] border border-slate-200 dark:border-slate-700 bg-white/40 dark:bg-slate-900/40">
+        <h1 class="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight">Quiz History</h1>
+    </div>
+
+    <div
+        class="glass rounded-[2rem] border border-slate-200 dark:border-slate-700 overflow-hidden bg-white/30 dark:bg-slate-900/20 shadow-md">
+        <div class="w-full overflow-x-auto scrollbar-thin">
+            <table class="w-full text-left text-xs border-collapse min-w-[1000px]">
+                <thead>
+                    <tr
+                        class="bg-slate-100/70 dark:bg-slate-900/60 text-slate-400 font-black uppercase tracking-wider border-b dark:border-slate-800 sticky top-0 backdrop-blur-md z-10 select-none">
+                        <th class="p-4 text-center w-12">#</th>
+                        <th class="p-4">Quiz Name</th>
+                        <th class="p-4">Category</th>
+                        <th class="p-4">Attempt Date</th>
+                        <th class="p-4">Time Taken</th>
+                        <th class="p-4 text-center">Correct</th>
+                        <th class="p-4 text-center">Wrong</th>
+                        <th class="p-4 text-center">Not Answered</th>
+                        <th class="p-4 text-center">Marks</th>
+                        <th class="p-4">Percentage</th>
+                        <th class="p-4">XP Earned</th>
+                        <th class="p-4">Coins Earned</th>
+                    </tr>
+                </thead>
+                <tbody
+                    class="divide-y divide-slate-100 dark:divide-slate-800/60 font-semibold text-slate-700 dark:text-slate-300">
+                    {% for hist in history_log %}
+                    <tr
+                        class="hover:bg-slate-50/50 dark:hover:bg-slate-800/10 transition-colors duration-150 odd:bg-white/[0.01] even:bg-slate-50/[0.02]">
+                        <td class="p-4 text-center font-mono text-slate-400">#{{ loop.revindex }}</td>
+                        <td class="p-4">
+                            <span class="font-black text-slate-800 dark:text-white leading-tight">
+                                {{ hist.quiz_name | default("Quiz Module") }}
+                            </span>
+                        </td>
+                        <td class="p-4">
+                            <span
+                                class="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded font-bold uppercase tracking-wider">
+                                {{ hist.quiz_category | default("General") }}
+                            </span>
+                        </td>
+                        <td class="p-4 font-mono text-slate-500 dark:text-slate-400">
+                            {% if hist.date %}
+                            {{ hist.date.strftime('%d %b %Y') }}
+                            {% else %}
+                            N/A
+                            {% endif %}
+                        </td>
+                        <td class="p-4 font-mono text-slate-400">
+                            {% set seconds = hist.time_taken | default(0) %}
+                            {% set minutes = (seconds / 60) | int %}
+                            {% set remaining_secs = seconds % 60 %}
+                            {{ "%02d" | format(minutes) }}:{{ "%02d" | format(remaining_secs) }}
+                        </td>
+                        <td class="p-4 text-center font-mono text-emerald-500 font-bold">{{ hist.correct_answer }}</td>
+                        <td class="p-4 text-center font-mono text-rose-500 font-bold">{{ hist.wrong_answer }}</td>
+                        <td class="p-4 text-center font-mono text-slate-400">{{ hist.unanswered_count | default(0) }}
+                        </td>
+                        <td class="p-4 text-center font-mono font-bold">{{ hist.correct_answer }} / {{
+                            hist.total_questions | default(10) }}</td>
+                        <td class="p-4 font-mono font-black text-primary">{{ hist.score }}%</td>
+                        <td class="p-4 font-mono text-amber-500">+{{ hist.xp_earned }} XP</td>
+                        <td class="p-4 font-mono text-yellow-600 dark:text-yellow-400">+{{ hist.coins_earned }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if not history_log %}
+        <div class="py-16 flex flex-col items-center justify-center text-center space-y-4">
+            <div
+                class="w-16 h-16 bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-600 rounded-full flex items-center justify-center shadow-inner">
+                <i data-lucide="history" class="w-8 h-8"></i>
+            </div>
+            <div>
+                <h3 class="text-base font-black text-slate-800 dark:text-white">No Quiz History Found</h3>
+            </div>
+            <a href="/explore_quizes"
+                class="inline-flex px-5 py-2.5 bg-primary text-white text-xs font-black rounded-xl shadow-md hover:shadow-indigo-500/20 active:scale-95 transition-all uppercase tracking-wider">
+                Explore Quizzes
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    });
+</script>
+<style>
+    .glass {
+        background: rgba(255, 255, 255, 0.45);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
+
+    .dark .glass {
+        background: rgba(30, 41, 59, 0.45);
+    }
+</style>
+{% endblock %}

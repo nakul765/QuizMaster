@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Daily Challenge - QuizMaster{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-8 pb-12 animate-[fadeInUp_0.5s_ease-out]">
+
+    <section
+        class="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-indigo-900 via-purple-800 to-indigo-700 p-8 md:p-12 text-white shadow-2xl">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10">
+        </div>
+        <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="max-w-xl">
+                <div
+                    class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-200 border border-yellow-500/30 text-xs font-bold uppercase tracking-wider mb-4">
+                    <i data-lucide="zap" class="w-3.5 h-3.5"></i> Daily Streak: 12 Days
+                </div>
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Today's Challenge</h1>
+                <p class="text-indigo-100 text-lg">Test your knowledge with our hand-picked daily quiz. Earn double XP
+                    and climb the leaderboard!</p>
+            </div>
+            <div class="glass !bg-white/10 !border-white/20 p-6 rounded-3xl text-center min-w-[200px]">
+                <p class="text-indigo-200 text-sm font-bold uppercase tracking-wider mb-2">Challenge Ends In</p>
+                <div class="text-3xl font-mono font-black text-white" id="countdown">04:12:35</div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div
+            class="glass bg-white dark:bg-slate-800 p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700 shadow-sm w-full">
+
+            <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-6">
+                Advanced Python Mastery
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <div class="flex items-center gap-4 text-slate-600 dark:text-slate-300">
+                    <div class="p-3 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 rounded-xl">
+                        <i data-lucide="list-ordered" class="w-6 h-6"></i>
+                    </div>
+
+                    <div>
+                        <p class="font-bold text-slate-800 dark:text-white">
+                            20 Questions
+                        </p>
+                        <p class="text-sm">
+                            Multiple choice questions
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 text-slate-600 dark:text-slate-300">
+                    <div class="p-3 bg-purple-100 dark:bg-purple-900/30 text-purple-600 rounded-xl">
+                        <i data-lucide="award" class="w-6 h-6"></i>
+                    </div>
+
+                    <div>
+                        <p class="font-bold text-slate-800 dark:text-white">
+                            Random XP Reward
+                        </p>
+                        <p class="text-sm">
+                            Earn random points today
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <a href="/challenge"
+                class="mt-8 block w-full py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold rounded-2xl shadow-lg hover:shadow-indigo-500/30 transition-all text-lg text-center">
+                🚀 Start Challenge Now
+            </a>
+
+        </div>
+    </section>
+
+    <section class="rounded-[2rem] bg-slate-800 p-10 text-center text-white">
+        <h3 class="text-3xl font-black mb-4">Consistency is Key</h3>
+        <p class="text-slate-400 mb-8 max-w-2xl mx-auto">"Success is the sum of small efforts, repeated day in and day
+            out." Start your daily streak today!</p>
+    </section>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Simple Timer Logic
+    function updateTimer() {
+        const now = new Date();
+        const end = new Date();
+        end.setHours(24, 0, 0, 0);
+        const diff = end - now;
+        const h = Math.floor(diff / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        document.getElementById('countdown').innerText =
+            `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+    setInterval(updateTimer, 1000);
+    lucide.createIcons();
+</script>
+{% endblock %}

@@ -1,0 +1,338 @@
+/* ==========================================================================
+   Base & Global Styles
+   ========================================================================== */
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* Premium SaaS Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::selection {
+    background-color: #6366f1;
+    color: white;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    /* Tailwind slate-300 */
+    border-radius: 10px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: #475569;
+    /* Tailwind slate-600 */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+    /* Tailwind slate-400 */
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+    /* Tailwind slate-500 */
+}
+
+/* ==========================================================================
+   UI Components (Glassmorphism & Widgets)
+   ========================================================================== */
+
+/* Light Mode Glass */
+.glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Dark Mode Glass */
+.dark .glass {
+    background: rgba(30, 41, 59, 0.7);
+    /* Tailwind slate-800 */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Heatmap Cells (For Dashboard Streak Calendar) */
+.heatmap-cell {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.heatmap-cell:hover {
+    transform: scale(1.2);
+    opacity: 0.8;
+}
+
+/* ==========================================================================
+   Custom Animations
+   ========================================================================== */
+
+/* Skeleton Loader */
+.skeleton {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Dashboard Element Fade-in */
+.animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+html {
+    scroll-behavior: smooth;
+    overflow-y: scroll;
+}
+
+/* Loader Styles */
+#loader-wrapper{
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(0,0,0,0.65);   /* Transparent black */
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    z-index: 99999;
+
+    transition: opacity .5s ease, visibility .5s ease;
+}
+
+.dark #loader-wrapper{
+    background: rgba(0,0,0,0.65);
+}
+
+.circle-dot-loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #6366f1;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Sidebar & Other styles... */
+.glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: #475569;
+    transition: all 300ms ease;
+}
+
+.active-link {
+    background: #6366f1 !important;
+    color: white !important;
+}
+
+.dropdown-content {
+    display: none;
+}
+
+.dark #loader-wrapper{
+    background:#0f172a;
+}
+
+/* ==========================================================================
+   SaaS Sidebar Styles
+   ========================================================================== */
+
+/* Main Links */
+.saas-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: #475569;
+    /* slate-600 */
+    transition: all 300ms ease;
+    border-left: 3px solid transparent;
+}
+
+.dark .saas-link {
+    color: #94a3b8;
+    /* slate-400 */
+}
+
+/* Hover State */
+.saas-link:hover:not(.saas-active-link):not(.saas-logout) {
+    background-color: #f1f5f9;
+    /* slate-100 */
+    color: #0f172a;
+    /* slate-900 */
+}
+
+.dark .saas-link:hover:not(.saas-active-link):not(.saas-logout) {
+    background-color: #1e293b;
+    /* slate-800 */
+    color: #f8fafc;
+    /* slate-50 */
+}
+
+/* Icon Animations */
+.saas-icon {
+    color: #94a3b8;
+    /* slate-400 */
+    transition: transform 300ms ease, color 300ms ease;
+}
+
+.saas-link:hover:not(.saas-active-link) .saas-icon {
+    transform: scale(1.1);
+    color: #64748b;
+    /* slate-500 */
+}
+
+.dark .saas-link:hover:not(.saas-active-link) .saas-icon {
+    color: #cbd5e1;
+    /* slate-300 */
+}
+
+/* Active Page State */
+.saas-active-link {
+    background-color: #6366f1 !important;
+    /* primary */
+    color: #ffffff !important;
+    border-left: 3px solid #c7d2fe !important;
+    /* indigo-200 */
+    box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2), 0 2px 4px -1px rgba(99, 102, 241, 0.1);
+}
+
+.saas-active-link .saas-icon {
+    color: #ffffff !important;
+}
+
+/* Accordion Specifics */
+.saas-sublink {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px 8px 36px;
+    /* Offset for nesting */
+    border-radius: 8px;
+    color: #64748b;
+    font-size: 0.875rem;
+    /* text-sm */
+    transition: all 300ms ease;
+    position: relative;
+}
+
+.dark .saas-sublink {
+    color: #94a3b8;
+}
+
+.saas-sublink:hover {
+    color: #0f172a;
+}
+
+.dark .saas-sublink:hover {
+    color: #f8fafc;
+}
+
+.saas-sublink:hover .saas-icon {
+    transform: scale(1.1);
+}
+
+/* Accordion Animation Logic */
+.saas-accordion-content {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.saas-accordion-content>div {
+    overflow: hidden;
+}
+
+.saas-accordion.open .saas-accordion-content {
+    grid-template-rows: 1fr;
+}
+
+.saas-accordion.open .saas-chevron {
+    transform: rotate(180deg);
+}
+
+/* Thin Scrollbar for Sidebar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.chevron.rotate {
+    transform: rotate(180deg);
+}
+
+.dropdown-btn.active {
+    color: #6366f1;
+    font-weight: 600;
+}
+
+.sidebar-link.active-link {
+    background: #6366f1;
+    color: white;
+}
+
+.sidebar-link.active-link i {
+    color: white;
+}

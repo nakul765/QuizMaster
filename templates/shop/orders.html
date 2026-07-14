@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% block title %}My Orders Ledger - QuizMaster Pro{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-6 pb-12 animate-[fadeInUp_0.4s_ease-out]">
+
+    <div class="border-b dark:border-slate-800 pb-3 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h1 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight">My Orders</h1>
+            <p class="text-sm text-slate-400 mt-0.5">View everything you have purchased using coins.</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs font-semibold select-none">
+        <div class="glass p-5 rounded-3xl border border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-sm bg-white/50 dark:bg-slate-900/40">
+            <div>
+                <span class="text-slate-400 font-bold uppercase text-[9px] tracking-wider block">Total Orders</span>
+                <span class="text-2xl font-black text-slate-800 dark:text-white mt-1 block">{{ purchases|length if purchases else 0 }}</span>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center"><i data-lucide="shopping-bag" class="w-5 h-5"></i></div>
+        </div>
+
+        <div class="glass p-5 rounded-3xl border border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-sm bg-white/50 dark:bg-slate-900/40">
+            <div>
+                <span class="text-slate-400 font-bold uppercase text-[9px] tracking-wider block">Total Coins Spent</span>
+                <span class="text-2xl font-black text-yellow-600 dark:text-yellow-400 font-mono mt-1 block">
+                    {% set total_spent = namespace(value=0) %}
+                    {% for order in purchases %}
+                    {% set total_spent.value = total_spent.value + order.coins_paid %}
+                    {% endfor %}
+                    {{ total_spent.value }}c
+                </span>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 flex items-center justify-center">
+                <i data-lucide="coins" class="w-5 h-5 fill-yellow-500/10"></i></div>
+        </div>
+
+        <div class="glass p-5 rounded-3xl border border-slate-200 dark:border-slate-800 flex items-center justify-between shadow-sm bg-white/50 dark:bg-slate-900/40">
+            <div>
+                <span class="text-slate-400 font-bold uppercase text-[9px] tracking-wider block">Last Purchase Date</span>
+                <span class="text-base font-black text-slate-800 dark:text-white mt-1.5 block font-mono">
+                    {% if purchases and purchases|length >= 1 %}
+                    {{ purchases[0].purchase_date.strftime('%d %b %Y') }}
+                    {% else %}
+                    No Records
+                    {% endif %}
+                </span>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center"><i data-lucide="calendar" class="w-5 h-5"></i></div>
+        </div>
+    </div>
+
+    <div class="glass p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 shadow-sm flex flex-col lg:flex-row justify-between items-center gap-4">
+        <form method="GET" action="/orders" class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-semibold">
+            <div class="relative w-full">
+                <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" name="search" value="{{ search if search else '' }}" placeholder="Search by Item..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 text-slate-800 dark:text-white outline-none focus:border-primary shadow-sm">
+            </div>
+
+            <select name="filter" onchange="this.form.submit()" class="px-4 py-2.5 rounded-xl border dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary shadow-sm">
+                <option value="all" {% if filter=='all' or not filter %}selected{% endif %}>All Time</option>
+                <option value="today" {% if filter=='today' %}selected{% endif %}>Today</option>
+                <option value="week" {% if filter=='week' %}selected{% endif %}>This Week</option>
+                <option value="month" {% if filter=='month' %}selected{% endif %}>This Month</option>
+            </select>
+
+            <select name="sort" onchange="this.form.submit()" class="px-4 py-2.5 rounded-xl border dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary shadow-sm">
+                <option value="newest" {% if sort=='newest' or not sort %}selected{% endif %}>Newest</option>
+                <option value="oldest" {% if sort=='oldest' %}selected{% endif %}>Oldest</option>
+                <option value="highest_price" {% if sort=='highest_price' %}selected{% endif %}>Highest Price</option>
+                <option value="lowest_price" {% if sort=='lowest_price' %}selected{% endif %}>Lowest Price</option>
+            </select>
+
+            {% if search or filter and filter != 'all' or sort and sort != 'newest' %}
+            <a href="/orders" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-600 dark:text-slate-400 rounded-xl flex items-center justify-center border transition-all shadow-sm">
+                Clear Filters Matrix
+            </a>
+            {% endif %}
+        </form>
+    </div>
+
+    <div class="glass rounded-[2rem] border border-slate-200 dark:border-slate-700 overflow-hidden bg-white/30 dark:bg-slate-900/20 shadow-md">
+        <div class="w-full overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse min-w-[900px]">
+                <thead>
+                    <tr class="bg-slate-100/70 dark:bg-slate-900/60 text-slate-400 font-black uppercase tracking-wider border-b dark:border-slate-800 sticky top-0 backdrop-blur-md z-10 select-none">
+                        <th class="p-4 text-center w-24">Order ID</th>
+                        <th class="p-4 text-center w-20">Image</th>
+                        <th class="p-4">Item Name</th>
+                        <th class="p-4">Category</th>
+                        <th class="p-4 text-center">Coins Paid</th>
+                        <th class="p-4">Purchase Date</th>
+                        <th class="p-4 text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 font-semibold text-slate-700 dark:text-slate-300">
+                    {% for order in purchases %}
+                    <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/10 transition-colors duration-150 odd:bg-white/[0.01] even:bg-slate-50/[0.02]">
+                        <td class="p-4 text-center font-mono text-slate-400">#{{ "%04d" | format(order.id) }}</td>
+                        <td class="p-4 text-center select-none">
+                            <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 border text-slate-400 dark:border-slate-700 flex items-center justify-center overflow-hidden mx-auto">
+                                {% if order.item.image_url %}
+                                <img src="{{ order.item.image_url }}" alt="{{ order.item.name }}" class="w-full h-full object-cover">
+                                {% else %}
+                                <i data-lucide="package" class="w-4 h-4 text-text-muted"></i>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="p-4">
+                            <span class="font-black text-slate-800 dark:text-white leading-tight">
+                                {{ order.item.name }}
+                            </span>
+                        </td>
+                        <td class="p-4">
+                            <span class="text-[10px] bg-primary/10 text-primary px-2.5 py-0.5 rounded font-black uppercase tracking-wider">
+                                {{ order.item.category }}
+                            </span>
+                        </td>
+                        <td class="p-4 text-center font-mono text-yellow-600 dark:text-yellow-400 font-bold">
+                            {{ order.coins_paid }}c
+                        </td>
+                        <td class="p-4 font-mono text-slate-500 dark:text-slate-400">
+                            {{ order.purchase_date.strftime('%d %b %Y %H:%M') }}
+                        </td>
+                        <td class="p-4 text-center select-none">
+                            {% set status_val = order.status | default('Completed') %}
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider
+                                {% if status_val == 'Completed' or status_val == 'Delivered' %} bg-emerald-500/10 text-emerald-600 dark:text-emerald-400
+                                {% elif status_val == 'Pending' %} bg-amber-500/10 text-amber-600 dark:text-amber-400
+                                {% else %} bg-rose-500/10 text-rose-600 dark:text-rose-400 {% endif %}">
+                                {{ status_val }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colSpan="7" class="p-0">
+                            <div class="py-16 flex flex-col items-center justify-center text-center space-y-4 select-none">
+                                <div class="w-20 h-20 bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-600 rounded-full flex items-center justify-center shadow-inner">
+                                    <i data-lucide="shopping-cart" class="w-10 h-10"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-black text-slate-800 dark:text-white">No Orders Yet</h3>
+                                    <p class="text-xs text-slate-400 max-w-xs mt-0.5">Your ledger file is empty. Head back to the store to trade your credits for upgrades.</p>
+                                </div>
+                                <a href="/shop" class="inline-flex px-6 py-3 bg-primary hover:bg-indigo-600 text-white text-xs font-black rounded-xl shadow-md uppercase tracking-wider active:scale-[0.98] transition-all">
+                                    Go Shopping
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

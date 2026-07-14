@@ -1,0 +1,704 @@
+{% extends "base.html" %}
+{% block title %}Quiz Result | QuizMaster Pro{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-8 pb-12 animate-[fadeInUp_0.4s_ease-out]">
+
+    <div class="text-xs text-slate-400 dark:text-slate-500">
+        Home / Quiz / <span class="text-primary font-bold">Result</span>
+    </div>
+
+    <div
+        class="glass p-6 md:p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-700 bg-white/40 dark:bg-slate-900/40 shadow-xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative overflow-hidden">
+        <div class="space-y-2 flex-1">
+            <div class="flex items-center gap-3">
+                <h1 class="text-2xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tight">
+                    🎉 Quiz Completed Successfully
+                </h1>
+            </div>
+            <h2 class="text-lg font-bold text-primary">{{ quiz_title }}</h2>
+            <div
+                class="grid grid-cols-1 sm:grid-cols-3 gap-y-1 gap-x-6 pt-2 text-xs font-bold text-slate-400 dark:text-slate-500">
+                <span class="flex items-center gap-1.5"><i data-lucide="calendar" class="w-4 h-4"></i> Completed on: 08
+                    July 2026</span>
+                <span class="flex items-center gap-1.5"><i data-lucide="hourglass" class="w-4 h-4"></i> Time Taken: 08
+                    min 32 sec</span>
+                <span class="flex items-center gap-1.5"><i data-lucide="clock" class="w-4 h-4"></i> Quiz Duration: {{
+                    quiz_timelimit }} Minutes</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+
+        <!-- Score -->
+        <div
+            class="glass p-5 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 bg-white/50 dark:bg-slate-800/40 text-center space-y-1">
+            <i data-lucide="target" class="w-5 h-5 mx-auto text-primary"></i>
+            <p class="text-[10px] text-slate-400 uppercase font-black tracking-wider">Score</p>
+            <p class="text-2xl font-black text-slate-800 dark:text-white font-mono">
+                <span class="metric-counter" data-val="{{ user_score }}"></span>%
+            </p>
+        </div>
+
+        <!-- Correct -->
+        <div
+            class="glass p-5 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 bg-white/50 dark:bg-slate-800/40 text-center space-y-1">
+            <i data-lucide="check-circle" class="w-5 h-5 mx-auto text-emerald-500"></i>
+            <p class="text-[10px] text-slate-400 uppercase font-black tracking-wider">Correct</p>
+            <p class="text-2xl font-black text-emerald-500 font-mono">
+                <span class="metric-counter" data-val="{{ correct }}">0</span>
+            </p>
+        </div>
+
+        <!-- Wrong -->
+        <div
+            class="glass p-5 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 bg-white/50 dark:bg-slate-800/40 text-center space-y-1">
+            <i data-lucide="x-circle" class="w-5 h-5 mx-auto text-rose-500"></i>
+            <p class="text-[10px] text-slate-400 uppercase font-black tracking-wider">Wrong</p>
+            <p class="text-2xl font-black text-rose-500 font-mono">
+                <span class="metric-counter" data-val="{{ wrong }}">0</span>
+            </p>
+        </div>
+
+        <!-- Not Answered -->
+        <div
+            class="glass p-5 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 bg-white/50 dark:bg-slate-800/40 text-center space-y-1">
+            <i data-lucide="minus-circle" class="w-5 h-5 mx-auto text-slate-500"></i>
+            <p class="text-[10px] text-slate-400 uppercase font-black tracking-wider">Not Answered</p>
+            <p class="text-2xl font-black text-slate-600 dark:text-slate-300 font-mono">
+                <span class="metric-counter" data-val="{{ unanswered_count }}">0</span>
+            </p>
+        </div>
+
+        <!-- Total Marks -->
+        <div
+            class="glass p-5 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 bg-white/50 dark:bg-slate-800/40 text-center space-y-1">
+            <i data-lucide="award" class="w-5 h-5 mx-auto text-indigo-500"></i>
+            <p class="text-[10px] text-slate-400 uppercase font-black tracking-wider">Total Marks</p>
+            <p class="text-lg font-black text-slate-800 dark:text-white font-mono">
+                {{ user_marks }} / {{ total_quiz_marks }}
+            </p>
+        </div>
+
+        <!-- XP -->
+        <div
+            class="glass p-5 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 bg-white/50 dark:bg-slate-800/40 text-center space-y-1">
+            <i data-lucide="zap" class="w-5 h-5 mx-auto text-amber-500"></i>
+            <p class="text-[10px] text-slate-400 uppercase font-black tracking-wider">XP Earned</p>
+            <p class="text-lg font-black text-amber-500 font-mono">
+                +<span class="metric-counter" data-val="{{ user_xp }}">0</span> XP
+            </p>
+        </div>
+
+        <!-- Coins -->
+        <div
+            class="glass p-5 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 bg-white/50 dark:bg-slate-800/40 text-center space-y-1">
+            <i data-lucide="coins" class="w-5 h-5 mx-auto text-yellow-500"></i>
+            <p class="text-[10px] text-slate-400 uppercase font-black tracking-wider">Coins Earned</p>
+            <p class="text-lg font-black text-yellow-600 dark:text-yellow-400 font-mono">
+                +<span class="metric-counter" data-val="{{ total_coins }}">0</span>
+            </p>
+        </div>
+
+        <!-- Streak -->
+        <div
+            class="glass p-5 rounded-3xl border border-slate-200/60 dark:border-slate-700/60 bg-white/50 dark:bg-slate-800/40 text-center space-y-1">
+            <i data-lucide="flame" class="w-5 h-5 mx-auto text-orange-500"></i>
+            <p class="text-[10px] text-slate-400 uppercase font-black tracking-wider">Current Streak</p>
+            <p class="text-lg font-black text-orange-500 font-mono">
+                {{ user.streak }} Days
+            </p>
+        </div>
+
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <div class="lg:col-span-2 space-y-6">
+            <div
+                class="glass p-6 rounded-[2rem] border border-slate-200 dark:border-slate-700 bg-white/40 dark:bg-slate-800/20 shadow-md">
+                <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Statistical Result Analysis
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    <div class="h-48 flex justify-center relative"><canvas id="resultPieChartCanvas"></canvas></div>
+                    <div class="h-48 flex justify-center relative"><canvas id="resultBarChartCanvas"></canvas></div>
+                </div>
+            </div>
+
+            <div
+                class="glass p-6 rounded-[2rem] border border-slate-200 dark:border-slate-700 bg-white/40 dark:bg-slate-800/20 shadow-md space-y-4">
+                <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Performance Section Metrics
+                </h3>
+
+                <div class="space-y-1">
+                    <div class="flex justify-between text-xs font-bold"><span class="text-slate-500">Accuracy
+                            Rate</span><span class="text-primary">{{ user_score }}%</span></div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden shadow-inner">
+                        <div class="bg-primary h-full rounded-full transition-all duration-1000 ease-out"
+                            style="width: {{ user_score }}%"></div>
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <div class="flex justify-between text-xs font-bold"><span class="text-slate-500">Correct Answers
+                        </span><span class="text-emerald-500">{{ correct }} Items</span></div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden shadow-inner">
+                        <div class="bg-emerald-500 h-full rounded-full transition-all duration-1000 ease-out"
+                            style="width: {{ correct }}%"></div>
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <div class="flex justify-between text-xs font-bold"><span class="text-slate-500">Wrong Answers
+                        </span><span class="text-rose-500">{{ wrong }} Items</span></div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden shadow-inner">
+                        <div class="bg-rose-500 h-full rounded-full transition-all duration-1000 ease-out"
+                            style="width: {{ wrong }}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            <div
+                class="glass p-6 rounded-[2rem] border border-slate-200 dark:border-slate-700 bg-white/40 dark:bg-slate-800/20 shadow-md space-y-4">
+                <h3
+                    class="text-xs font-black text-slate-400 uppercase tracking-widest border-b dark:border-slate-800 pb-2">
+                    User Details</h3>
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary font-black text-lg shadow-sm">
+                        <i data-lucide="user" class="w-6 h-6"></i>
+                    </div>
+                    <div class="truncate">
+                        <p class="text-sm font-black text-slate-800 dark:text-white leading-none">{{ user_name }} {{
+                            user_surname }}</p>
+                        <p class="text-xs text-slate-400 mt-1 truncate">{{ user_email }}</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3 pt-1 text-[11px] font-bold text-slate-500 dark:text-slate-400">
+                    <div class="p-2 bg-slate-100/60 dark:bg-slate-800/40 rounded-xl">Role: <span
+                            class="text-slate-800 dark:text-white uppercase font-black ml-0.5">{{ role }}</span></div>
+                    <div class="p-2 bg-slate-100/60 dark:bg-slate-800/40 rounded-xl">Rank Standings: <span
+                            class="text-indigo-500 font-black ml-0.5">#12</span></div>
+                    <div
+                        class="p-2 bg-slate-100/60 dark:bg-slate-800/40 rounded-xl col-span-2 flex items-center justify-between">
+                        <span>Level {{ user_level }} Progression:</span>
+                        <span class="text-slate-800 dark:text-white font-mono">{{ xp }} / 1500 XP</span>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="glass p-6 rounded-[2rem] border border-slate-200 dark:border-slate-700 bg-white/40 dark:bg-slate-800/20 shadow-md space-y-3 text-xs font-bold text-slate-500 dark:text-slate-400">
+                <h3
+                    class="text-xs font-black text-slate-400 uppercase tracking-widest border-b dark:border-slate-800 pb-2 mb-1">
+                    Quiz Details</h3>
+                <div class="flex justify-between"><span class="text-slate-400">Topic Allocation:</span><span
+                        class="text-slate-800 dark:text-white font-black">{{ quiz_title }}</span></div>
+                <div class="flex justify-between"><span class="text-slate-400">Subject Category:</span><span
+                        class="text-primary font-black">{{ quiz_category }}</span></div>
+                <div class="flex justify-between border-t dark:border-slate-800/60 pt-2.5 mt-1"><span
+                        class="text-slate-400">Attempt Sequence No:</span><span
+                        class="text-slate-800 dark:text-white font-black">#1</span></div>
+                <div class="flex justify-between"><span class="text-slate-400">Execution Date:</span><span
+                        class="text-slate-800 dark:text-white font-mono">2026-07-08</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div
+            class="glass p-6 rounded-[2rem] border border-slate-200 dark:border-slate-700 bg-white/40 dark:bg-slate-800/20 shadow-md flex flex-col justify-between">
+            <div>
+                <h3
+                    class="text-xs font-black text-slate-400 uppercase tracking-widest border-b dark:border-slate-800 pb-2 mb-4">
+                    Rewards Earned</h3>
+                <div class="space-y-2.5 text-xs font-bold text-slate-600 dark:text-slate-400">
+                    <div
+                        class="flex items-center justify-between p-2.5 bg-amber-500/5 rounded-xl border border-amber-500/10">
+                        <span class="flex items-center gap-2"><i data-lucide="zap"
+                                class="w-4 h-4 text-amber-500 fill-amber-500/10"></i> Account Experience
+                            Allotment:</span><span class="text-amber-500 font-black">+250 XP</span>
+                    </div>
+                    <div
+                        class="flex items-center justify-between p-2.5 bg-yellow-500/5 rounded-xl border border-yellow-500/10">
+                        <span class="flex items-center gap-2"><i data-lucide="coins"
+                                class="w-4 h-4 text-yellow-500"></i> Platform Currency Credit:</span><span
+                            class="text-yellow-600 dark:text-yellow-400 font-black">+80 Coins</span>
+                    </div>
+                    <div
+                        class="flex items-center justify-between p-2.5 bg-emerald-500/5 rounded-xl border border-emerald-500/10">
+                        <span class="flex items-center gap-2"><i data-lucide="award"
+                                class="w-4 h-4 text-emerald-500"></i> Gamified Unlocked Token:</span><span
+                            class="text-emerald-600 dark:text-emerald-400 font-black">+1 Milestone Badge</span>
+                    </div>
+                </div>
+            </div>
+            <p class="text-[10px] text-slate-400 mt-4 font-bold flex items-center gap-1"><i data-lucide="check"
+                    class="w-3 h-3 text-emerald-500"></i> Level up and currency metrics transactions synchronized to
+                server logs.</p>
+        </div>
+
+        <div
+            class="glass p-6 rounded-[2rem] border border-slate-200 dark:border-slate-700 bg-white/40 dark:bg-slate-800/20 shadow-md">
+            <h3
+                class="text-xs font-black text-slate-400 uppercase tracking-widest border-b dark:border-slate-800 pb-2 mb-4">
+                Achievements Unlocked</h3>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div
+                    class="p-3 bg-gradient-to-br from-purple-500/5 to-indigo-500/5 border border-primary/10 rounded-2xl flex items-center gap-2.5 hover:shadow-inner transition-all duration-300">
+                    <div
+                        class="w-10 h-10 bg-gradient-to-tr from-purple-500 to-indigo-600 text-white rounded-xl flex items-center justify-center shadow-md shadow-indigo-500/20">
+                        <i data-lucide="award" class="w-5 h-5"></i>
+                    </div>
+                    <div class="truncate">
+                        <p class="text-xs font-black text-slate-800 dark:text-white leading-tight">First Quiz</p>
+                        <p class="text-[9px] text-slate-400 mt-0.5">Initial Completion</p>
+                    </div>
+                </div>
+                <div
+                    class="p-3 bg-gradient-to-br from-amber-500/5 to-orange-500/5 border border-amber-500/10 rounded-2xl flex items-center gap-2.5 hover:shadow-inner transition-all duration-300">
+                    <div
+                        class="w-10 h-10 bg-gradient-to-tr from-amber-400 to-orange-500 text-white rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20">
+                        <i data-lucide="sparkles" class="w-5 h-5 fill-white/10"></i>
+                    </div>
+                    <div class="truncate">
+                        <p class="text-xs font-black text-slate-800 dark:text-white leading-tight">Perfect Accuracy</p>
+                        <p class="text-[9px] text-slate-400 mt-0.5">Zero Error Pipeline</p>
+                    </div>
+                </div>
+                <div
+                    class="p-3 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 border border-blue-500/10 rounded-2xl flex items-center gap-2.5 hover:shadow-inner transition-all duration-300">
+                    <div
+                        class="w-10 h-10 bg-gradient-to-tr from-blue-500 to-cyan-500 text-white rounded-xl flex items-center justify-center shadow-md shadow-blue-500/20">
+                        <i data-lucide="terminal" class="w-5 h-5"></i>
+                    </div>
+                    <div class="truncate">
+                        <p class="text-xs font-black text-slate-800 dark:text-white leading-tight">Python Beginner</p>
+                        <p class="text-[9px] text-slate-400 mt-0.5">Syntax Core Checked</p>
+                    </div>
+                </div>
+                <div
+                    class="p-3 bg-gradient-to-br from-rose-500/5 to-red-500/5 border border-rose-500/10 rounded-2xl flex items-center gap-2.5 hover:shadow-inner transition-all duration-300">
+                    <div
+                        class="w-10 h-10 bg-gradient-to-tr from-rose-500 to-red-600 text-white rounded-xl flex items-center justify-center shadow-md shadow-rose-500/20">
+                        <i data-lucide="zap" class="w-5 h-5"></i>
+                    </div>
+                    <div class="truncate">
+                        <p class="text-xs font-black text-slate-800 dark:text-white leading-tight">Speed Runner</p>
+                        <p class="text-[9px] text-slate-400 mt-0.5">Rapid Evaluation Bounds</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div
+        class="glass p-6 md:p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-700 bg-white/40 dark:bg-slate-800/20 shadow-md space-y-4">
+        <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Earned Certificate Preview</h3>
+
+        <div
+            class="w-full max-w-2xl mx-auto aspect-[1.414/1] bg-white text-slate-900 border-[12px] border-double border-indigo-950 p-6 md:p-10 flex flex-col justify-between relative select-none shadow-xl rounded-xl">
+            <div class="absolute top-2 left-2 text-indigo-950/20 font-serif text-3xl">✦</div>
+            <div class="absolute top-2 right-2 text-indigo-950/20 font-serif text-3xl">✦</div>
+            <div class="absolute bottom-2 left-2 text-indigo-950/20 font-serif text-3xl">✦</div>
+            <div class="absolute bottom-2 right-2 text-indigo-950/20 font-serif text-3xl">✦</div>
+
+            <div class="text-center space-y-1">
+                <div
+                    class="flex items-center justify-center gap-1 text-indigo-950 font-black text-sm tracking-widest uppercase">
+                    <i data-lucide="layers" class="w-4 h-4 text-primary fill-primary/10"></i> QuizMaster Pro
+                </div>
+                <h2 class="font-serif text-2xl md:text-3xl font-bold italic text-slate-800 pt-2 tracking-wide">
+                    Certificate of Achievement</h2>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">This credential registry
+                    honors the successful completion of verification criteria</p>
+            </div>
+
+            <div class="text-center space-y-2 my-2">
+                <p class="text-xs text-slate-400 font-medium italic">Proudly presented to</p>
+                <h3
+                    class="text-xl md:text-2xl font-serif font-bold text-indigo-950 border-b border-indigo-950/20 pb-1 max-w-md mx-auto">
+                    {{ first_name }} {{ last_name }}</h3>
+                <p class="text-xs text-slate-500 max-w-sm mx-auto leading-normal font-medium">For demonstrating academic
+                    proficiency in <strong class="text-indigo-950 font-black">{{ quiz_title }}</strong> under the
+                    specialized umbrella segment category <span class="underline underline-offset-2">{{ quiz_category
+                        }}</span>.</p>
+            </div>
+
+            <div
+                class="flex items-end justify-between text-left text-[9px] text-slate-400 font-bold tracking-tight border-t border-slate-100 pt-4">
+                <div class="space-y-1">
+                    <p>Final Evaluation Mark: <span class="text-indigo-950 font-black">{{ user_marks }} / {{
+                            total_quiz_marks }}</span></p>
+                    <p>Validation Hash Signature: <span
+                            class="font-mono text-slate-500 font-medium select-all uppercase">sha256_8f3c9e2b11a4b</span>
+                    </p>
+                    <p>Issue Date Timeline: <span class="font-mono text-slate-500 font-medium">2026-07-08</span></p>
+                </div>
+
+                <div class="flex items-center gap-6">
+                    <div class="text-center border-t border-slate-300 pt-1 w-24">
+                        <p class="font-serif italic text-slate-600 text-[10px] leading-none mb-1">QuizMaster Core</p>
+                        <p class="text-[7px] uppercase tracking-widest text-slate-400">Authorized Sign</p>
+                    </div>
+                    <div
+                        class="w-12 h-12 rounded-full border-4 border-double border-amber-500 flex flex-col items-center justify-center text-amber-600 font-black text-[7px] tracking-tighter leading-none p-1 rotate-12 bg-amber-50/50">
+                        <span>OFFICIAL</span>
+                        <span class="font-serif font-black text-[8px] my-0.5">SEAL</span>
+                        <span>VERIFIED</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div
+        class="glass p-6 md:p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-700 bg-white/40 dark:bg-slate-800/20 shadow-md space-y-6">
+        <div>
+            <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Question Review Details</h3>
+            <p class="text-[10px] text-slate-400">Itemized analysis comparing selected choices allocations against
+                correct master indexes keys.</p>
+        </div>
+        <div class="space-y-4">
+
+            {% for data in review_data %}
+
+            <div class="p-5 bg-white/80 dark:bg-slate-800/40 rounded-2xl border-l-4
+
+{% if data.status == 'correct' %}
+border-emerald-500 dark:border-emerald-500
+
+{% elif data.status == 'wrong' %}
+border-rose-500 dark:border-rose-500
+
+{% else %}
+border-slate-400 dark:border-slate-500
+{% endif %}
+
+shadow-sm flex flex-col sm:flex-row sm:items-start justify-between gap-4 transition-all duration-300 hover:shadow-md">
+
+                <div class="space-y-2 flex-1">
+
+                    <div class="flex items-center gap-2 text-[10px] font-black uppercase tracking-wider">
+                        <span class="text-slate-400">
+                            Question {{ loop.index }}
+                        </span>
+                    </div>
+
+                    <h4 class="text-sm font-bold text-slate-800 dark:text-white">
+                        {{ data.question_text }}
+                    </h4>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs">
+
+                        <!-- USER ANSWER -->
+
+                        <div class="p-3 rounded-xl border">
+
+                            <span class="block text-[10px] uppercase font-bold text-slate-400 mb-1">
+                                Your Answer
+                            </span>
+
+                            {% if data.status == "correct" %}
+
+                            <span class="text-emerald-600 font-bold">
+                                ✔ {{ data.user_answer }}
+                            </span>
+
+                            {% elif data.status == "wrong" %}
+
+                            <span class="text-rose-600 font-bold">
+                                ✖ {{ data.user_answer }}
+                            </span>
+
+                            {% else %}
+
+                            <span class="text-slate-500 italic">
+                                Not Answered
+                            </span>
+
+                            {% endif %}
+
+                        </div>
+
+                        <!-- CORRECT ANSWER -->
+
+                        <div class="p-3 rounded-xl border">
+
+                            <span class="block text-[10px] uppercase font-bold text-slate-400 mb-1">
+                                Correct Answer
+                            </span>
+
+                            <span class="text-emerald-600 font-bold">
+                                ✔ {{ data.correct_answer }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="flex-shrink-0">
+
+                    {% if data.status == "correct" %}
+
+                    <span
+                        class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-bold">
+
+                        <i data-lucide="check"></i>
+
+                        Correct
+
+                    </span>
+
+                    {% elif data.status == "wrong" %}
+
+                    <span
+                        class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-rose-500/10 text-rose-600 text-[10px] font-bold">
+
+                        <i data-lucide="x"></i>
+
+                        Wrong
+
+                    </span>
+
+                    {% else %}
+
+                    <span
+                        class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-slate-500/10 text-slate-500 text-[10px] font-bold">
+
+                        <i data-lucide="minus"></i>
+
+                        Skipped
+
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+    </div>
+
+    <div
+        class="glass p-6 md:p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-700 bg-white/40 dark:bg-slate-800/20 shadow-md space-y-4">
+        <div>
+            <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Historical Attempt Registry
+            </h3>
+            <p class="text-[10px] text-slate-400">Past performance compilation logs for this specific module tracking
+                academic trajectories values.</p>
+        </div>
+
+        <div class="w-full overflow-x-auto rounded-2xl border dark:border-slate-800">
+            <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                    <tr
+                        class="bg-slate-100/60 dark:bg-slate-900/40 text-slate-400 font-black uppercase tracking-wider border-b dark:border-slate-800">
+                        <th class="p-3.5">Attempt #</th>
+                        <th class="p-3.5">Date Completed</th>
+                        <th class="p-3.5">Score</th>
+                        <th class="p-3.5">Percentage</th>
+                        <th class="p-3.5">Time Taken</th>
+                        <th class="p-3.5">XP Award</th>
+                        <th class="p-3.5">Coins Credit</th>
+                    </tr>
+                </thead>
+
+                <tbody
+                    class="divide-y divide-slate-100 dark:divide-slate-800/60 font-semibold text-slate-700 dark:text-slate-300">
+
+                    {% for attempt in history_log %}
+
+                    {% set minutes = attempt.time_taken // 60 %}
+                    {% set seconds = attempt.time_taken % 60 %}
+
+                    <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/20 transition-all duration-150">
+
+                        <td class="p-3.5 font-mono text-slate-400">
+                            #{{ history_log|length - loop.index0 }}
+                        </td>
+
+                        <td class="p-3.5">
+                            {{ attempt.date.strftime("%d %b %Y") }}
+                        </td>
+
+                        <td class="p-3.5 font-mono">
+                            {{ attempt.correct_answer }} / {{ attempt.correct_answer + attempt.wrong_answer }}
+                        </td>
+
+                        <td class="p-3.5 font-mono font-black text-primary">
+                            {{ attempt.score }}%
+                        </td>
+
+                        <td class="p-3.5 font-mono text-slate-500">
+                            {{ "%02d"|format(minutes) }}:{{ "%02d"|format(seconds) }}
+                        </td>
+
+                        <td class="p-3.5 font-mono text-amber-500">
+                            +{{ attempt.xp_earned }}
+                        </td>
+
+                        <td class="p-3.5 font-mono text-yellow-600 dark:text-yellow-400">
+                            +{{ attempt.coins_earned }}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="flex flex-wrap items-center justify-center gap-3 pt-4">
+        <a href="/explore_quizes"
+            class="px-5 py-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-white text-xs font-black rounded-xl transition-all uppercase tracking-wider flex items-center gap-1.5"><i
+                data-lucide="arrow-left" class="w-4 h-4"></i> Explore More Quizzes</a>
+        <a href="/index"
+            class="px-5 py-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-white text-xs font-black rounded-xl transition-all uppercase tracking-wider flex items-center gap-1.5"><i
+                data-lucide="home" class="w-4 h-4"></i> Back to Home</a>
+        <a href="/quiz_exam/{{ quiz.id }}"
+            class="px-5 py-3 bg-primary hover:bg-indigo-700 text-white text-xs font-black rounded-xl shadow-md hover:shadow-indigo-500/20 transition-all uppercase tracking-wider flex items-center gap-1.5"><i
+                data-lucide="rotate-ccw" class="w-4 h-4"></i> Retake Quiz</a>
+
+        <button onclick="scrollToCertificateLayoutView()"
+            class="px-5 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-black rounded-xl shadow-md hover:shadow-purple-500/20 transition-all uppercase tracking-wider flex items-center gap-1.5"><i
+                data-lucide="eye" class="w-4 h-4"></i> View Certificate</button>
+        <a href="{{ url_for('download_certificate', attempt_id=history_log[0].id) }}"
+            class="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black rounded-xl shadow-md hover:shadow-emerald-500/20 transition-all uppercase tracking-wider flex items-center gap-1.5">
+            <i data-lucide="download" class="w-4 h-4"></i> Download Certificate
+        </a>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // --- GRAPHICAL VISUALISATION CHARTS CONTROLLERS CONFIGURATION (Chart.js Integration) ---
+    document.addEventListener("DOMContentLoaded", () => {
+        // Fetch real evaluation statistics passed from the Flask render context
+        const correctCount = parseInt("{{ correct }}", 10) || 0;
+        const wrongCount = parseInt("{{ wrong }}", 10) || 0;
+        const unansweredCount = parseInt("{{ unanswered_count }}", 10) || 0;
+
+        // Chart 1 Configuration: Dynamic Pie Chart Distribution mapping
+        const pieCtx = document.getElementById('resultPieChartCanvas');
+        if (pieCtx) {
+            new Chart(pieCtx.getContext('2d'), {
+                type: 'pie',
+                data: {
+                    labels: ['Correct', 'Wrong', 'Skipped'],
+                    datasets: [{
+                        data: [correctCount, wrongCount, unansweredCount],
+                        backgroundColor: ['#10b981', '#ef4444', '#94a3b8'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                font: { family: 'Inter', weight: 'bold' }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Chart 2 Configuration: Dynamic Bar Chart Metrics Allocation
+        const barCtx = document.getElementById('resultBarChartCanvas');
+        if (barCtx) {
+            new Chart(barCtx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Your Score', 'Passing Cutoff', 'Total Marks'],
+                    datasets: [{
+                        label: 'Marks Valuation',
+                        // Uses your real quiz marks variables natively from the database route context
+                        data: [
+                            parseInt("{{ user_marks }}", 10) || 0,
+                            Math.ceil((parseInt("{{ total_quiz_marks }}", 10) || 1) * 0.6), // Standardized 60% dynamic cutoff benchmark
+                            parseInt("{{ total_quiz_marks }}", 10) || 0
+                        ],
+                        backgroundColor: ['#6366f1', '#f59e0b', '#10b981'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: parseInt("{{ total_quiz_marks }}", 10) || 100,
+                            ticks: { stepSize: 1 }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        // --- NUMERIC COUNTERS MICRO-ANIMATION INTERACTION RAMP LOGIC ---
+        document.querySelectorAll('.metric-counter').forEach(counter => {
+            const targetVal = parseInt(counter.getAttribute('data-val'), 10) || 0;
+            if (targetVal === 0) {
+                counter.innerText = "0";
+                return;
+            }
+
+            let currentVal = 0;
+            const incrementStep = Math.ceil(targetVal / 50);
+
+            const timer = setInterval(() => {
+                currentVal += incrementStep;
+                if (currentVal >= targetVal) {
+                    counter.innerText = targetVal;
+                    clearInterval(timer);
+                } else {
+                    counter.innerText = currentVal;
+                }
+            }, 20);
+        });
+
+        // Initialize Lucide Vector nodes asset engines safely
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    });
+
+    // SCROLL TO VIEW CERTIFICATE ELEMENT SMOOTHLY
+    function scrollToCertificateLayoutView() {
+        const certificateContainer = document.querySelector('.aspect-\\[1\\.414\\/1\\]');
+        if (certificateContainer) {
+            certificateContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            certificateContainer.classList.add('ring-4', 'ring-primary/30');
+            setTimeout(() => certificateContainer.classList.remove('ring-4', 'ring-primary/30'), 2000);
+        }
+    }
+</script>
+<style>
+    .glass {
+        background: rgba(255, 255, 255, 0.45);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
+
+    .dark .glass {
+        background: rgba(30, 41, 59, 0.45);
+    }
+</style>
+{% endblock %}

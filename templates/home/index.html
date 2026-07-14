@@ -1,0 +1,290 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+    <div
+        class="glass rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between bg-gradient-to-r from-primary/10 to-secondary/10 gap-4">
+        <div class="w-full">
+            <h1 class="text-2xl md:text-3xl font-bold mb-2">Welcome back, {{ first_name }}! 👋</h1>
+            <p class="text-slate-500 dark:text-slate-400 mb-1">
+                You're on a <span class="font-bold text-orange-500">{{ streak }}-day streak</span>. Keep it up!
+            </p>
+            <p class="text-slate-400 dark:text-slate-500 text-sm mb-4">{{ today_date }}</p>
+
+            <div class="flex flex-wrap items-center gap-4 mb-4">
+                <span class="px-3 py-1 rounded-lg bg-primary/10 text-primary text-sm font-bold">Level {{ level }} · {{
+                    level_title }}</span>
+                <span class="px-3 py-1 rounded-lg bg-yellow-500/10 text-yellow-600 text-sm font-bold">🪙 {{ coins }}
+                    Coins</span>
+            </div>
+
+            <div class="w-full max-w-md mb-4">
+                <div class="flex justify-between text-xs text-slate-400 mb-1">
+                    <span>XP Progress</span>
+                    <span>{{ xp_current }} / {{ xp_required }} XP</span>
+                </div>
+                <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2.5">
+                    <div class="bg-primary h-2.5 rounded-full" style="width: {{ xp_progress_percent }}%"></div>
+                </div>
+            </div>
+
+            <a href="/explore_quizes"
+                class="px-6 py-2.5 bg-primary text-white font-medium rounded-lg shadow-lg hover:bg-indigo-600 transition-colors inline-block">
+                Explore Quizzes
+            </a>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+
+        <div class="glass p-5 rounded-xl shadow-sm hover:-translate-y-1 transition-transform">
+            <p class="text-slate-400 text-xs font-bold uppercase mb-1">Total XP Earned</p>
+            <h3 class="text-2xl font-black text-primary">{{ total_xp_earned }}</h3>
+        </div>
+
+        <div class="glass p-5 rounded-xl shadow-sm hover:-translate-y-1 transition-transform">
+            <p class="text-slate-400 text-xs font-bold uppercase mb-1">Quizzes Attempted</p>
+            <h3 class="text-2xl font-black">{{ quizzes_attempted }}</h3>
+        </div>
+
+        <div class="glass p-5 rounded-xl shadow-sm hover:-translate-y-1 transition-transform">
+            <p class="text-slate-400 text-xs font-bold uppercase mb-1">Study Hours</p>
+            <h3 class="text-2xl font-black">{{ study_hours }}h</h3>
+        </div>
+
+        <div class="glass p-5 rounded-xl shadow-sm hover:-translate-y-1 transition-transform">
+            <p class="text-slate-400 text-xs font-bold uppercase mb-1">Global Rank</p>
+            <h3 class="text-2xl font-black text-secondary">#{{ global_rank }}</h3>
+        </div>
+
+        <div class="glass p-5 rounded-xl shadow-sm hover:-translate-y-1 transition-transform">
+            <p class="text-slate-400 text-xs font-bold uppercase mb-1">Accuracy</p>
+            <h3 class="text-2xl font-black text-green-500">{{ accuracy }}%</h3>
+        </div>
+
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <div class="glass p-5 rounded-2xl shadow-sm">
+            <h3 class="font-bold mb-4">Daily Practice Time</h3>
+            <div class="relative h-64">
+                <canvas id="practiceTimeChart"></canvas>
+            </div>
+        </div>
+
+        <div class="glass p-5 rounded-2xl shadow-sm">
+            <h3 class="font-bold mb-4">Score Growth Trend</h3>
+            <div class="relative h-64">
+                <canvas id="scoreTrendChart"></canvas>
+            </div>
+        </div>
+
+        <div class="glass p-5 rounded-2xl shadow-sm">
+            <h3 class="font-bold mb-4">Category Performance</h3>
+            <div class="relative h-64">
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+
+        <div class="glass p-5 rounded-2xl shadow-sm">
+            <h3 class="font-bold mb-4">Level Progress</h3>
+            <div class="relative h-64">
+                <canvas id="rankProgressChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <div class="glass p-5 rounded-2xl shadow-sm lg:col-span-2 overflow-hidden">
+            <h3 class="font-bold mb-4">Recent Activity</h3>
+            {% if recent_activity %}
+            <div class="overflow-x-auto w-full">
+                <table class="w-full text-sm min-w-[500px]">
+                    <thead>
+                        <tr class="text-left text-slate-400 text-xs uppercase border-b dark:border-slate-700">
+                            <th class="py-2 pr-4">Quiz</th>
+                            <th class="py-2 pr-4">Score</th>
+                            <th class="py-2 pr-4">XP</th>
+                            <th class="py-2 pr-4">Coins</th>
+                            <th class="py-2 pr-4">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in recent_activity %}
+                        <tr class="border-b border-slate-100 dark:border-slate-800">
+                            <td class="py-2 pr-4 font-medium">{{ item.quiz_name }}</td>
+                            <td class="py-2 pr-4 font-bold text-primary">{{ item.score }}%</td>
+                            <td class="py-2 pr-4">{{ item.xp }}</td>
+                            <td class="py-2 pr-4">{{ item.coins }}</td>
+                            <td class="py-2 pr-4 text-slate-400">{{ item.date }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-slate-400 text-sm">No quiz attempts yet. Start a quiz to see your activity here.</p>
+            {% endif %}
+        </div>
+
+        <div class="glass p-5 rounded-2xl shadow-sm">
+            <h3 class="font-bold mb-4">Upcoming Daily Challenge</h3>
+            <div class="space-y-3">
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-400 text-xs uppercase font-bold">XP Reward</span>
+                    <span class="font-black text-primary">+{{ daily_reward.xp }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-400 text-xs uppercase font-bold">Coins Reward</span>
+                    <span class="font-black text-yellow-600">+{{ daily_reward.coins }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-400 text-xs uppercase font-bold">Difficulty</span>
+                    <span class="font-black">{{ daily_reward.difficulty }}</span>
+                </div>
+                <a href="/daily_challenge"
+                    class="block text-center mt-2 px-4 py-2.5 bg-primary text-white font-medium rounded-lg shadow hover:bg-indigo-600 transition-colors">
+                    Go to Challenge
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <div class="glass p-5 rounded-2xl shadow-sm lg:col-span-2">
+            <h3 class="font-bold mb-4">Quick Stats</h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div>
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">Highest Score</p>
+                    <h4 class="text-lg font-black text-green-500">{{ quick_stats.highest_score }}%</h4>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">Lowest Score</p>
+                    <h4 class="text-lg font-black text-rose-500">{{ quick_stats.lowest_score }}%</h4>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">Average Score</p>
+                    <h4 class="text-lg font-black">{{ quick_stats.average_score }}%</h4>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">Best Category</p>
+                    <h4 class="text-lg font-black text-primary">{{ quick_stats.best_category }}</h4>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">Worst Category</p>
+                    <h4 class="text-lg font-black text-secondary">{{ quick_stats.worst_category }}</h4>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">Fastest Quiz</p>
+                    <h4 class="text-lg font-black">{{ quick_stats.fastest_quiz }}s</h4>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">Longest Quiz</p>
+                    <h4 class="text-lg font-black">{{ quick_stats.longest_quiz }}s</h4>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">Daily Challenges Done</p>
+                    <h4 class="text-lg font-black">{{ quick_stats.daily_challenges_completed }}</h4>
+                </div>
+                <div>
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">Current Streak</p>
+                    <h4 class="text-lg font-black text-orange-500">{{ quick_stats.current_streak }}d</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass p-5 rounded-2xl shadow-sm">
+            <h3 class="font-bold mb-4">Top Performers</h3>
+            <div class="space-y-3">
+                {% for perf in top_performers %}
+                <div class="flex items-center gap-3">
+                    <span class="text-xs font-bold text-slate-400 w-4">{{ loop.index }}</span>
+                    <div
+                        class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-black flex-shrink-0">
+                        {{ perf.name[0]|upper }}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-bold truncate">{{ perf.name }}</p>
+                        <p class="text-xs text-slate-400">Level {{ perf.level }}</p>
+                    </div>
+                    <span class="text-sm font-black text-primary whitespace-nowrap">{{ perf.xp }} XP</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false
+    };
+
+    new Chart(document.getElementById('practiceTimeChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ chart_days_labels| safe }},
+        datasets: [{
+            label: 'Practice Hours',
+            data: {{ chart_hours_data| safe }},
+        borderWidth: 2
+        }]
+    },
+        options: chartOptions
+});
+
+    new Chart(document.getElementById('scoreTrendChart'), {
+        type: 'line',
+        data: {
+            labels: {{ chart_score_labels| safe }},
+        datasets: [{
+            label: 'Score',
+            data: {{ chart_score_data| safe }},
+        fill: true,
+        tension: 0.4
+        }]
+    },
+        options: chartOptions
+});
+
+    new Chart(document.getElementById('categoryChart'), {
+        type: 'radar',
+        data: {
+            labels: {{ chart_cat_labels| safe }},
+        datasets: [{
+            label: 'Performance',
+            data: {{ chart_cat_data| safe }}
+        }]
+    },
+        options: chartOptions
+});
+
+    new Chart(document.getElementById('rankProgressChart'), {
+        type: 'line',
+        data: {
+            labels: {{ chart_progress_labels| safe }},
+        datasets: [{
+            label: 'Average Score',
+            data: {{ chart_progress_data| safe }},
+        fill: true,
+        tension: 0.4
+        }]
+    },
+        options: chartOptions
+});
+
+</script>
+{% endblock %}

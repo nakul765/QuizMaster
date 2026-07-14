@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}My Inventory - QuizMaster Pro{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-6 pb-12 animate-[fadeInUp_0.4s_ease-out]">
+
+    <div class="border-b dark:border-slate-800 pb-3">
+        <h1 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight">My Inventory</h1>
+        <p class="text-sm text-slate-400 mt-0.5">View your collected unique titles, themes, frames, and items.</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {% for item in items %}
+        <div class="glass p-5 rounded-3xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between shadow-sm relative">
+            <div>
+                <div class="w-full h-44 bg-slate-100 dark:bg-slate-800/60 rounded-2xl mb-4 flex items-center justify-center border dark:border-slate-700 relative overflow-hidden select-none">
+                    {% if item.image_url %}
+                    <img src="{{ item.image_url }}" alt="{{ item.name }}" class="max-h-32 object-contain">
+                    {% else %}
+                    <i data-lucide="archive" class="w-12 h-12 text-slate-300 dark:text-slate-600"></i>
+                    {% endif %}
+
+                    <div class="absolute top-3 left-3">
+                        <span class="px-2.5 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-primary/10 text-primary border border-primary/10 backdrop-blur-md">
+                            {{ item.category }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <h3 class="font-black text-slate-800 dark:text-white text-base leading-tight tracking-tight">
+                        {{ item.name }}
+                    </h3>
+                    <p class="text-xs text-slate-400 dark:text-slate-500 font-normal leading-relaxed line-clamp-2">
+                        {{ item.description }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-span-full py-16 flex flex-col items-center justify-center text-center space-y-4 select-none">
+            <div class="w-20 h-24 bg-slate-100 dark:bg-slate-800/50 text-slate-300 dark:text-slate-600 rounded-full flex items-center justify-center shadow-inner mx-auto mb-3">
+                <i data-lucide="package" class="w-10 h-10"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-black text-slate-800 dark:text-white">Inventory is empty</h3>
+                <p class="text-xs text-slate-400 max-w-xs mt-0.5">Purchase unique items from the shop to view them inside your vault collection.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

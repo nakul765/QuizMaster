@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+{% block title %}{{ quiz.title }} - Examination{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-8 space-y-8 animate-[fadeInUp_0.4s_ease-out]">
+
+    <div
+        class="glass p-6 md:p-8 rounded-[2rem] border border-slate-200 dark:border-slate-700 bg-white/40 dark:bg-slate-900/40 shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div class="space-y-1.5">
+            <h1 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight">{{ quiz.title }}</h1>
+            <p class="text-sm font-semibold text-slate-500 dark:text-slate-400">Category : <span class="text-primary">{{
+                    quiz.category }}</span></p>
+
+            <div class="flex flex-wrap items-center gap-x-6 gap-y-1 pt-2 text-xs font-bold text-slate-400">
+                <span class="flex items-center gap-1.5"><i data-lucide="list-ordered" class="w-4 h-4"></i> Questions :
+                    {{ questions | length }}</span>
+                <span class="flex items-center gap-1.5"><i data-lucide="award" class="w-4 h-4"></i> Marks : {{ questions
+                    | length }}</span>
+                <span class="flex items-center gap-1.5"><i data-lucide="clock" class="w-4 h-4"></i> Time : {{
+                    quiz.time_limit }} Minutes</span>
+            </div>
+        </div>
+
+        <div id="countdownDisplayWrapper"
+            class="flex flex-col items-center md:items-end gap-1 flex-shrink-0 w-full md:w-auto p-4 bg-slate-100/80 dark:bg-slate-800/80 rounded-2xl border dark:border-slate-700 shadow-inner">
+            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Remaining Time</span>
+            <div id="liveCountdownClock"
+                class="font-mono text-3xl font-black text-slate-700 dark:text-white transition-all duration-300">
+                00:00
+            </div>
+        </div>
+    </div>
+
+    <form id="assessmentSubmitForm" action="/submit_quiz/{{ quiz.id }}" method="POST" class="space-y-6">
+
+        <input type="hidden" id="time_taken" name="time_taken" value="0">
+
+        {% for question in questions %}
+        <div
+            class="question-row-card glass p-6 md:p-8 rounded-[2rem] border border-slate-200 dark:border-slate-700 shadow-md bg-white/50 dark:bg-slate-800/30 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800/60 pb-3">
+                <span class="text-xs font-black text-primary uppercase tracking-wider">Question {{ loop.index }}</span>
+                <span class="text-xs font-bold text-slate-400">Marks : 1</span>
+            </div>
+
+            <h3 class="text-lg font-bold text-slate-800 dark:text-white leading-snug tracking-tight">
+                {{ question.question }}
+            </h3>
+
+            <div class="grid grid-cols-1 gap-3 pt-2">
+                {% set outer_loop = loop %}
+                {% for opt_val, opt_text in [(question.optiona , question.optiona), (question.optionb,
+                question.optionb), (question.optionc, question.optionc), (question.optiond, question.optiond)] %}
+                <label
+                    class="option-selection-label p-4 border border-slate-200 dark:border-slate-700 bg-white/20 dark:bg-slate-800/20 rounded-2xl flex items-center gap-3 transition-all duration-200 cursor-pointer select-none group hover:-translate-y-0.5 has-[:checked]:border-primary has-[:checked]:bg-primary/5 dark:has-[:checked]:bg-primary/10 has-[:checked]:font-bold has-[:checked]:text-primary">
+                    <input type="radio" name="question_{{ question.id }}" value="{{ opt_val }}" required
+                        class="w-4 h-4 text-primary bg-slate-100 border-slate-300 focus:ring-primary focus:ring-2 accent-primary dark:border-slate-600 dark:bg-slate-700">
+                    <span
+                        class="text-sm text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
+                        {{ opt_text }}
+                    </span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="pt-6 flex justify-center">
+            <button type="button" id="mainSubmitQuizBtn" onclick="toggleModal('examSubmissionModal', true)"
+                class="px-10 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm font-black rounded-2xl shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 hover:-translate-y-0.5 active:scale-95 transition-all duration-300 uppercase tracking-wider">
+                Submit Quiz </button>
+        </div>
+    </form>
+</div>
+
+<div id="examSubmissionModal"
+    class="fixed inset-0 z-[200] hidden flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-[fadeIn_0.2s_ease-out]">
+    <div
+        class="glass w-full max-w-md p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-700 shadow-2xl bg-white dark:bg-slate-900 relative">
+        <div class="text-center space-y-3 mb-6">
+            <div
+                class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-2">
+                <i data-lucide="help-circle" class="w-6 h-6"></i>
+            </div>
+            <h2 class="text-xl font-black text-slate-800 dark:text-white tracking-tight">Submit Quiz</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Are you sure you want to submit your quiz?</p>
+        </div>
+
+        <div class="flex justify-end gap-3 border-t border-slate-100 dark:border-slate-800 pt-4">
+            <button onclick="toggleModal('examSubmissionModal', false)"
+                class="px-5 py-2.5 text-xs font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all">
+                Cancel
+            </button>
+            <button onclick="commitFormSubmissionPayload()"
+                class="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-black rounded-xl shadow-md transition-all uppercase tracking-wider">
+                Submit
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="timeFinishedModal"
+    class="fixed inset-0 z-[250] hidden flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-[fadeIn_0.25s_ease-out]">
+    <div
+        class="glass w-full max-w-md p-8 rounded-[2.5rem] border border-red-200 dark:border-red-900/50 shadow-2xl bg-white dark:bg-slate-900 relative">
+        <div class="text-center space-y-3 mb-6">
+            <div
+                class="w-12 h-12 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-2 animate-bounce">
+                <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+            </div>
+            <h2 class="text-xl font-black text-slate-800 dark:text-white tracking-tight">Time Finished</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Your examination time has finished.<br>Your answers
+                have been submitted automatically.</p>
+        </div>
+
+        <div class="border-t border-slate-100 dark:border-slate-800 pt-4 text-center">
+            <a href="/index"
+                class="inline-block w-full py-3 bg-slate-800 dark:bg-slate-700 hover:bg-slate-900 text-white text-xs font-black rounded-xl shadow-md transition-all uppercase tracking-wider text-center">
+                Return to Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const QUIZ_ID = "{{ quiz.id }}";
+    const TIMER_KEY = "quiz_timer_" + QUIZ_ID;
+
+    const timer = document.getElementById("liveCountdownClock");
+    const form = document.getElementById("assessmentSubmitForm");
+    const hiddenTime = document.getElementById("time_taken");
+
+    const TOTAL_TIME = Number("{{ quiz.time_limit }}") * 60;
+
+    // ----------------------------
+    // Restore Selected Answers
+    // ----------------------------
+
+    document.querySelectorAll("input[type='radio']").forEach(function (radio) {
+
+        const key = "answer_" + QUIZ_ID + "_" + radio.name;
+
+        if (localStorage.getItem(key) === radio.value) {
+            radio.checked = true;
+        }
+
+        radio.addEventListener("change", function () {
+            localStorage.setItem(key, radio.value);
+        });
+
+    });
+
+    // ----------------------------
+    // Timer
+    // ----------------------------
+
+    let endTime = localStorage.getItem(TIMER_KEY);
+
+    if (!endTime) {
+
+        endTime = Date.now() + TOTAL_TIME * 1000;
+
+        localStorage.setItem(TIMER_KEY, endTime);
+
+    }
+
+    endTime = Number(endTime);
+
+    function updateTimer() {
+
+        let remaining = Math.floor((endTime - Date.now()) / 1000);
+
+        if (remaining < 0)
+            remaining = 0;
+
+        let minutes = Math.floor(remaining / 60);
+        let seconds = remaining % 60;
+
+        timer.innerHTML =
+            String(minutes).padStart(2, "0") +
+            ":" +
+            String(seconds).padStart(2, "0");
+
+        if (remaining <= 300) {
+            timer.classList.add("text-red-500");
+        }
+
+        // Save elapsed seconds
+        hiddenTime.value = TOTAL_TIME - remaining;
+
+        if (remaining <= 0) {
+
+            clearInterval(countdown);
+
+            document.querySelectorAll("input[type='radio']").forEach(function (radio) {
+                radio.disabled = true;
+            });
+
+            form.submit();
+        }
+
+    }
+
+    updateTimer();
+
+    const countdown = setInterval(updateTimer, 1000);
+
+});
+
+// ----------------------------
+// Modal
+// ----------------------------
+
+function toggleModal(id, show) {
+
+    const modal = document.getElementById(id);
+
+    if (!modal) return;
+
+    if (show)
+        modal.classList.remove("hidden");
+    else
+        modal.classList.add("hidden");
+
+}
+
+// ----------------------------
+// Submit Quiz
+// ----------------------------
+
+function commitFormSubmissionPayload() {
+
+    const QUIZ_ID = "{{ quiz.id }}";
+
+    localStorage.removeItem("quiz_timer_" + QUIZ_ID);
+
+    document.querySelectorAll("input[type='radio']").forEach(function (radio) {
+
+        localStorage.removeItem(
+            "answer_" + QUIZ_ID + "_" + radio.name
+        );
+
+    });
+
+    document.getElementById("assessmentSubmitForm").submit();
+
+}
+</script>
+<style>
+    .glass {
+        background: rgba(255, 255, 255, 0.45);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
+
+    .dark .glass {
+        background: rgba(30, 41, 59, 0.45);
+    }
+</style>
+{% endblock %}

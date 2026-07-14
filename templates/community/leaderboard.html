@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block title %}Global Arena Leaderboards - QuizMaster Pro{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-8 pb-12 animate-[fadeInUp_0.4s_ease-out]">
+
+    <div class="grid grid-cols-3 gap-2 md:gap-4 items-end max-w-2xl mx-auto pt-10 text-center relative select-none">
+
+        {% if top3|length > 1 %}
+        <div class="flex flex-col items-center space-y-2 order-1 transform translate-y-4">
+            <div class="relative">
+                <img src="https://ui-avatars.com/api/?name={{ top3[1].first_name }}+{{ top3[1].last_name }}&background=94a3b8&color=fff"
+                    class="w-10 h-10 sm:w-14 sm:h-14 rounded-full border-2 sm:border-4 border-slate-300 object-cover shadow-md">
+
+                <span
+                    class="absolute -top-2 -right-1 bg-slate-400 text-white font-black text-[9px] w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center shadow">
+                    2
+                </span>
+            </div>
+
+            <p class="text-[10px] sm:text-xs font-black truncate max-w-[70px] sm:max-w-[90px]">
+                {{ top3[1].first_name }} {{ top3[1].last_name }}
+            </p>
+
+            <span class="text-[8px] sm:text-[10px] bg-slate-300/20 text-slate-500 px-1.5 sm:px-2 py-0.5 rounded font-black">
+                Level {{ top3[1].level }}
+            </span>
+
+            <div
+                class="w-full bg-gradient-to-t from-slate-300/40 to-slate-200/20 glass h-16 sm:h-24 rounded-t-2xl flex items-center justify-center text-xs sm:text-sm font-black text-slate-400">
+                Silver
+            </div>
+        </div>
+        {% endif %}
+
+        {% if top3|length > 0 %}
+        <div class="flex flex-col items-center space-y-2 order-2 scale-110 z-10 relative">
+
+            <div class="absolute -top-6 sm:text-yellow-500 animate-bounce">
+                <i data-lucide="crown" class="w-5 h-5 fill-yellow-500"></i>
+            </div>
+
+            <div class="relative">
+                <img src="https://ui-avatars.com/api/?name={{ top3[0].first_name }}+{{ top3[0].last_name }}&background=f59e0b&color=fff"
+                    class="w-12 h-12 sm:w-16 sm:h-16 rounded-full border-2 sm:border-4 border-yellow-400 shadow-xl">
+
+                <span
+                    class="absolute -top-2 -right-1 bg-yellow-500 text-white font-black text-[9px] sm:text-[10px] w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center shadow">
+                    1
+                </span>
+            </div>
+
+            <p class="text-[10px] sm:text-xs font-black truncate max-w-[80px] sm:max-w-[100px]">
+                {{ top3[0].first_name }} {{ top3[0].last_name }}
+            </p>
+
+            <span class="text-[8px] sm:text-[10px] bg-yellow-500/10 text-yellow-600 px-1.5 sm:px-2 py-0.5 rounded font-black">
+                Level {{ top3[0].level }}
+            </span>
+
+            <div
+                class="w-full bg-gradient-to-t from-yellow-500/30 to-amber-400/10 glass h-22 sm:h-32 rounded-t-2xl flex items-center justify-center text-xs sm:text-base font-black text-yellow-600">
+                Gold
+            </div>
+
+        </div>
+        {% endif %}
+
+        {% if top3|length > 2 %}
+        <div class="flex flex-col items-center space-y-2 order-3 transform translate-y-6">
+
+            <div class="relative">
+                <img src="https://ui-avatars.com/api/?name={{ top3[2].first_name }}+{{ top3[2].last_name }}&background=b45309&color=fff"
+                    class="w-10 h-10 sm:w-14 sm:h-14 rounded-full border-2 sm:border-4 border-amber-600 shadow-md">
+
+                <span
+                    class="absolute -top-2 -right-1 bg-amber-700 text-white font-black text-[9px] w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center shadow">
+                    3
+                </span>
+            </div>
+
+            <p class="text-[10px] sm:text-xs font-black truncate max-w-[70px] sm:max-w-[90px]">
+                {{ top3[2].first_name }} {{ top3[2].last_name }}
+            </p>
+
+            <span class="text-[8px] sm:text-[10px] bg-amber-600/10 text-amber-700 px-1.5 sm:px-2 py-0.5 rounded font-black">
+                Level {{ top3[2].level }}
+            </span>
+
+            <div
+                class="w-full bg-gradient-to-t from-amber-600/30 to-orange-500/10 glass h-14 sm:h-20 rounded-t-2xl flex items-center justify-center text-xs sm:text-sm font-black text-amber-700">
+                Bronze
+            </div>
+
+        </div>
+        {% endif %}
+    </div>
+
+    <div
+        class="glass rounded-[2.5rem] border border-slate-200 dark:border-slate-700 overflow-hidden bg-white/40 dark:bg-slate-900/40">
+        <div class="w-full overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse min-w-[600px]">
+                <thead>
+                    <tr
+                        class="bg-slate-100/60 dark:bg-slate-900/60 text-slate-400 font-black uppercase border-b dark:border-slate-800">
+                        <th class="p-4 text-center">Rank</th>
+                        <th class="p-4">Explorer Profile</th>
+                        <th class="p-4">Level</th>
+                        <th class="p-4">Total Experience</th>
+                        <th class="p-4">Currency Balance</th>
+                        <th class="p-4">Accuracy</th>
+                    </tr>
+                </thead>
+                <tbody
+                    class="divide-y divide-slate-100 dark:divide-slate-800/60 font-semibold text-slate-700 dark:text-slate-300">
+
+                    {% for user in others %}
+
+                    <tr
+                        class="{% if user.id == session['user_id'] %}bg-primary/5 border-l-4 border-primary{% else %}hover:bg-slate-50/50 dark:hover:bg-slate-800/10{% endif %}">
+
+                    <td class="p-4 text-center font-mono font-black">
+                        #{{ loop.index + 3 }}
+                    </td>
+
+                    <td class="p-4 flex items-center gap-2.5">
+
+                        <img src="https://ui-avatars.com/api/?name={{ user.first_name }}+{{ user.last_name }}&background=6366f1&color=fff"
+                            class="w-7 h-7 rounded-full">
+
+                        <div>
+
+                            <p class="font-black text-slate-800 dark:text-white leading-none">
+                                {{ user.first_name }} {{ user.last_name }}
+
+                                {% if user.id == session['user_id'] %}
+                                <span class="text-primary">(You)</span>
+                                {% endif %}
+
+                            </p>
+
+                            <p class="text-[10px] text-slate-400">
+                                Member
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                    <td class="p-4 font-mono">
+                        Level {{ user.level }}
+                    </td>
+
+                    <td class="p-4 font-mono text-amber-500 font-bold">
+                        {{ user.xp }} XP
+                    </td>
+
+                    <td class="p-4 font-mono text-yellow-500">
+                        {{ user.coins }} 🪙
+                    </td>
+
+                    <td class="p-4 font-mono text-emerald-500">
+                        --
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

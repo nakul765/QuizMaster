@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+{% block title %}Daily Challenge Live Examination | QuizMaster Pro{% endblock %}
+
+{% block content %}
+<div id="fullscreenSecurityGateAlert"
+    class="fixed inset-0 z-[300] hidden flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md select-none">
+    <div
+        class="glass max-w-md w-full p-8 rounded-[2.5rem] border border-rose-500/30 bg-white dark:bg-slate-900 text-center space-y-4 shadow-2xl">
+        <div
+            class="w-12 h-12 bg-rose-500/10 text-rose-500 rounded-full flex items-center justify-center mx-auto animate-pulse">
+            <i data-lucide="maximize-2" class="w-6 h-6"></i>
+        </div>
+        <h2 class="text-xl font-black text-slate-800 dark:text-white tracking-tight">Security Focus Lost</h2>
+        <p class="text-xs text-slate-400 leading-normal">Please return to fullscreen to continue your challenge. Leaving
+            active focus parameters compromises assessment integrity guidelines.</p>
+        <button onclick="requestEnforcedFullscreenContext()"
+            class="w-full py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-black rounded-xl uppercase tracking-wider shadow-md active:scale-95 transition-all">Re-enter
+            Fullscreen</button>
+    </div>
+</div>
+
+<div class="max-w-3xl mx-auto space-y-8 pb-16 select-none relative z-10 animate-[fadeInUp_0.4s_ease-out]"
+    id="liveAssessmentWorkspace">
+
+    <div
+        class="glass p-6 md:p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-700 bg-gradient-to-b from-purple-500/5 to-transparent shadow-xl space-y-4">
+        <div
+            class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b dark:border-slate-800 pb-4">
+            <div class="space-y-1">
+                <div
+                    class="inline-flex items-center gap-1.5 text-purple-600 dark:text-purple-400 text-sm font-black uppercase tracking-wider">
+                    <span class="w-2 h-2 rounded-full bg-purple-500 animate-pulse"></span> 🟣 Daily Challenge
+                </div>
+                <h1 class="text-xl font-black text-slate-800 dark:text-white tracking-tight">Today's Live Arena
+                    Assessment</h1>
+            </div>
+            <div
+                class="flex items-center gap-2 p-3 bg-slate-100/80 dark:bg-slate-800/80 rounded-2xl border dark:border-slate-700 font-mono text-base font-black text-rose-500 tracking-tight">
+                <i data-lucide="timer" class="w-4 h-4 text-rose-500 animate-pulse"></i> ⏰ Timer: <span
+                    id="assessmentLiveCountdownDisplayTicker">20:00</span>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-4 text-xs font-bold">
+            <span
+                class="flex items-center gap-1 text-amber-500 bg-amber-500/10 px-3 py-1.5 rounded-xl border border-amber-500/20">
+                <i data-lucide="zap" class="w-4 h-4 fill-amber-500/20"></i> +{{ challenge_meta.xp | default(300) }} XP
+            </span>
+            <span
+                class="flex items-center gap-1 text-yellow-600 dark:text-yellow-400 bg-yellow-500/10 px-3 py-1.5 rounded-xl border border-yellow-500/20">
+                <i data-lucide="coins" class="w-4 h-4 fill-yellow-500/20"></i> +{{ challenge_meta.coins | default(150)
+                }} Coins
+            </span>
+            <span class="ml-auto text-slate-400 dark:text-slate-500 hidden sm:inline-flex items-center gap-1">
+                <i data-lucide="help-circle" class="w-4 h-4"></i> 20 Questions Total
+            </span>
+        </div>
+    </div>
+
+    <form id="dailyChallengeMasterSubmissionForm" action="/submit_daily_challenge" method="POST" class="space-y-6">
+        <input type="hidden" name="time_taken_elapsed" id="hiddenTrackingTimeTakenElapsedSecondsField" value="0">
+
+        {% for question in questions %}
+        <div class="glass p-6 md:p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 shadow-md space-y-6"
+            id="assessmentQuestionLayoutPane-{{ loop.index }}">
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800/60 pb-3">
+                <span class="text-xs font-black text-purple-600 dark:text-purple-400 uppercase tracking-wider">Question
+                    {{ loop.index }}</span>
+                <span class="text-xs font-bold text-slate-400">1 Point</span>
+            </div>
+
+            <h3 class="text-base font-black text-slate-800 dark:text-white leading-snug tracking-tight">
+                {{ question.question | default("What is SQL?") }}
+            </h3>
+
+            <div class="grid grid-cols-1 gap-3">
+                {% set options = [
+                ('A', question.optiona),
+                ('B', question.optionb),
+                ('C', question.optionc),
+                ('D', question.optiond)
+                ] %}
+
+                {% for key, value in options %}
+                <label class="p-4 border rounded-2xl flex items-center gap-3 cursor-pointer">
+
+                    <input type="radio" name="question_{{ question.id }}" value="{{ key }}" class="mr-3">
+
+                    <strong>{{ key }}</strong>. {{ value }}
+
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% if not loop.last %}
+        <hr class="border-dashed border-slate-200 dark:border-slate-800 my-6">
+        {% endif %}
+
+        {% else %}
+        {% for mock_idx in range(1, 21) %}
+        <div class="glass p-6 md:p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900/40 shadow-md space-y-6"
+            id="assessmentQuestionLayoutPane-{{ mock_idx }}">
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800/60 pb-3">
+                <span class="text-xs font-black text-purple-600 dark:text-purple-400 uppercase tracking-wider">Question
+                    {{ mock_idx }}</span>
+                <span class="text-xs font-bold text-slate-400">1 Point</span>
+            </div>
+
+            <h3 class="text-base font-black text-slate-800 dark:text-white leading-snug tracking-tight">
+                {% if mock_idx == 1 %}What is SQL?{% else %}Sample Dynamic Automated Evaluation Question Module Text
+                Placeholder #{{ mock_idx }}?{% endif %}
+            </h3>
+
+            <div class="grid grid-cols-1 gap-3">
+                {% for opt_char, opt_text in [('A', 'Structured Query Language Reference Model'), ('B', 'Simple Binary
+                Compiled Interface Block'), ('C', 'System Object Orchestration Matrix'), ('D', 'Schema Query
+                Optimization Language Option')] %}
+                <label
+                    class="p-4 border border-slate-200 dark:border-slate-700 bg-white/20 dark:bg-slate-800/20 rounded-2xl flex items-center gap-3 transition-all duration-200 cursor-pointer group hover:bg-slate-50 dark:hover:bg-slate-800/50 has-[:checked]:border-purple-500 has-[:checked]:bg-purple-500/5 has-[:checked]:font-bold has-[:checked]:text-purple-600 dark:has-[:checked]:text-purple-400">
+                    <div
+                        class="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-800 border font-mono text-[10px] font-black text-slate-400 flex items-center justify-center group-hover:text-purple-500 group-hover:border-purple-500/40 transition-colors uppercase select-none">
+                        {{ opt_char }}
+                    </div>
+                    <input type="radio" name="question_mock_{{ mock_idx }}" value="Option {{ opt_char }}"
+                        class="hidden">
+                    <span class="text-xs text-slate-700 dark:text-slate-300 transition-colors">○ {{ opt_text }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+        {% if not loop.last %}
+        <hr class="border-dashed border-slate-200 dark:border-slate-800 my-6">
+        {% endif %}
+        {% endfor %}
+        {% endfor %}
+    </form>
+
+    <div class="flex justify-center pt-4">
+        <button type="button" onclick="invokeExamSubmissionConfirmationGateModal(true)"
+            class="w-full sm:w-auto px-12 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black rounded-2xl uppercase tracking-widest shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/35 active:scale-95 transition-all text-sm">
+            Submit Challenge
+        </button>
+    </div>
+</div>
+
+<div id="examSubmissionConfirmationModal"
+    class="fixed inset-0 z-[250] hidden flex items-center justify-center bg-slate-950/50 backdrop-blur-sm p-4 animate-[fadeIn_0.2s_ease-out] select-none">
+    <div
+        class="glass w-full max-w-sm p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-700 shadow-2xl bg-white dark:bg-slate-900 text-center space-y-4">
+        <div
+            class="w-12 h-12 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-full flex items-center justify-center mx-auto">
+            <i data-lucide="help-circle" class="w-6 h-6"></i>
+        </div>
+        <div>
+            <h2 class="text-xl font-black text-slate-800 dark:text-white tracking-tight">Submit Challenge?</h2>
+            <p class="text-xs text-slate-400 mt-1">You cannot attempt today's challenge again. Ensure all metrics are
+                properly compiled before final commitment records.</p>
+        </div>
+        <div class="flex justify-center gap-2 pt-2 border-t dark:border-slate-800/60">
+            <button type="button" onclick="invokeExamSubmissionConfirmationGateModal(false)"
+                class="flex-1 py-2.5 text-xs font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all">Cancel</button>
+            <button type="button" onclick="executeFinalExamFormSubmissionPipeline()"
+                class="flex-1 py-2.5 text-xs font-black bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl uppercase tracking-wider shadow-sm">Submit
+                Challenge</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let examinationTickerTimeLimitSeconds = 20 * 60; // Standardized 20-minute countdown allocation
+    let timeTakenElapsedSecondsCounter = 0;
+    let countdownIntervalRef = null;
+
+    function invokeExamSubmissionConfirmationGateModal(isOpen) {
+        const modal = document.getElementById('examSubmissionConfirmationModal');
+        if (!modal) return;
+        if (isOpen) modal.classList.remove('hidden');
+        else modal.classList.add('hidden');
+    }
+
+    function executeFinalExamFormSubmissionPipeline() {
+        window.onbeforeunload = null;
+        const form = document.getElementById('dailyChallengeMasterSubmissionForm');
+        if (form) form.submit();
+    }
+
+    function executeLiveClockTickingRampEngine() {
+        const display = document.getElementById('assessmentLiveCountdownDisplayTicker');
+        const hiddenField = document.getElementById('hiddenTrackingTimeTakenElapsedSecondsField');
+
+        countdownIntervalRef = setInterval(() => {
+            examinationTickerTimeLimitSeconds--;
+            timeTakenElapsedSecondsCounter++;
+
+            if (hiddenField) hiddenField.value = timeTakenElapsedSecondsCounter;
+
+            if (examinationTickerTimeLimitSeconds <= 0) {
+                clearInterval(countdownIntervalRef);
+                executeFinalExamFormSubmissionPipeline();
+                return;
+            }
+
+            const mins = Math.floor(examinationTickerTimeLimitSeconds / 60);
+            const secs = examinationTickerTimeLimitSeconds % 60;
+            if (display) display.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }, 1000);
+    }
+
+    function requestEnforcedFullscreenContext() {
+        const docEl = document.documentElement;
+        if (docEl.requestFullscreen) docEl.requestFullscreen();
+        else if (docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen();
+        else if (docEl.msRequestFullscreen) docEl.msRequestFullscreen();
+
+        const securityGate = document.getElementById('fullscreenSecurityGateAlert');
+        if (securityGate) securityGate.classList.add('hidden');
+    }
+
+    function handleFullscreenChangeFocusInterception() {
+        const isFullscreenActive = document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+        const securityGate = document.getElementById('fullscreenSecurityGateAlert');
+        if (!isFullscreenActive && securityGate) {
+            securityGate.classList.remove('hidden');
+        }
+    }
+
+    function engageAntiCheatInputInterceptionProtocols() {
+        const blockAction = (e) => { e.preventDefault(); return false; };
+
+        document.addEventListener('contextmenu', blockAction);
+        document.addEventListener('copy', blockAction);
+        document.addEventListener('paste', blockAction);
+        document.addEventListener('cut', blockAction);
+        document.addEventListener('selectstart', blockAction);
+        document.addEventListener('dragstart', blockAction);
+
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && ['c', 'v', 'x', 'a'].includes(e.key.toLowerCase())) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        executeLiveClockTickingRampEngine();
+        engageAntiCheatInputInterceptionProtocols();
+
+        window.onbeforeunload = function () {
+            return "Warning! Exiting metrics processing will lose alignment progress loops.";
+        };
+
+        document.addEventListener('fullscreenchange', handleFullscreenChangeFocusInterception);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChangeFocusInterception);
+        document.addEventListener('msfullscreenchange', handleFullscreenChangeFocusInterception);
+
+        setTimeout(() => {
+            requestEnforcedFullscreenContext();
+        }, 600);
+
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    });
+</script>
+<style>
+    .glass {
+        background: rgba(255, 255, 255, 0.45);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
+
+    .dark .glass {
+        background: rgba(30, 41, 59, 0.45);
+    }
+</style>
+{% endblock %}

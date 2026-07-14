@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+{% block title %}Daily Challenge Results | QuizMaster Pro{% endblock %}
+
+{% block content %}
+<div class="fixed inset-0 pointer-events-none z-50 overflow-hidden select-none">
+    <div
+        class="absolute inset-0 bg-gradient-to-tr from-purple-500/5 via-transparent to-indigo-500/5 opacity-70 animate-pulse">
+    </div>
+    <div class="absolute top-12 left-12 text-purple-500/20 animate-bounce duration-1000"><i data-lucide="sparkles"
+            class="w-8 h-8"></i></div>
+    <div class="absolute top-1/4 right-16 text-indigo-500/20 animate-bounce duration-700"><i data-lucide="trophy"
+            class="w-12 h-12"></i></div>
+    <div class="absolute bottom-1/4 left-20 text-pink-500/20 animate-bounce duration-1000"><i data-lucide="zap"
+            class="w-10 h-10"></i></div>
+    <div class="absolute bottom-16 right-24 text-amber-500/20 animate-bounce duration-500"><i data-lucide="award"
+            class="w-8 h-8"></i></div>
+</div>
+
+<div class="max-w-4xl mx-auto space-y-8 pb-16 px-4 relative z-10 select-none animate-[fadeInUp_0.5s_ease-out]">
+
+    <div
+        class="glass p-8 rounded-[2.5rem] border border-slate-200 dark:border-slate-700/60 text-center space-y-3 bg-gradient-to-b from-purple-500/10 via-transparent to-transparent shadow-xl">
+        <div
+            class="inline-flex items-center gap-2 px-4 py-1.5 bg-purple-500/10 text-purple-600 dark:text-purple-400 rounded-full border border-purple-500/20 text-xs font-black uppercase tracking-widest animate-pulse">
+            🎉 Daily Challenge Completed
+        </div>
+        <h1 class="text-3xl md:text-4xl font-black text-slate-800 dark:text-white tracking-tight">
+            Congratulations, <span
+                class="bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400 bg-clip-text text-transparent">{{
+                user_name }} {{ user_surname }}</span>!
+        </h1>
+
+        <div class="pt-2">
+            {% if user_score >= 90 %}
+            <div class="inline-flex items-center gap-2 text-xl font-black text-amber-500"><i data-lucide="crown"
+                    class="w-6 h-6 animate-spin duration-1000"></i> 🏆 Outstanding</div>
+            {% elif user_score >= 80 %}
+            <div class="inline-flex items-center gap-2 text-xl font-black text-orange-500"><i data-lucide="flame"
+                    class="w-6 h-6 animate-pulse"></i> 🔥 Excellent</div>
+            {% elif user_score >= 60 %}
+            <div class="inline-flex items-center gap-2 text-xl font-black text-emerald-500"><i data-lucide="thumbs-up"
+                    class="w-6 h-6"></i> 👍 Good Job</div>
+            {% elif user_score >= 40 %}
+            <div class="inline-flex items-center gap-2 text-xl font-black text-blue-500"><i data-lucide="smile"
+                    class="w-6 h-6"></i> 🙂 Keep Practicing</div>
+            {% else %}
+            <div class="inline-flex items-center gap-2 text-xl font-black text-rose-500"><i data-lucide="dumbbell"
+                    class="w-6 h-6 animate-bounce"></i> 💪 Don't Give Up</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div
+            class="glass p-5 rounded-2xl border border-slate-200 dark:border-slate-700/60 bg-white/40 dark:bg-slate-900/40 shadow-sm flex items-center gap-3">
+            <div
+                class="w-9 h-9 bg-emerald-500/10 text-emerald-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                <i data-lucide="check-circle" class="w-5 h-5"></i>
+            </div>
+            <div>
+                <div class="font-mono text-base font-black text-slate-800 dark:text-white">{{ correct }}</div>
+                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Correct</div>
+            </div>
+        </div>
+
+        <div
+            class="glass p-5 rounded-2xl border border-slate-200 dark:border-slate-700/60 bg-white/40 dark:bg-slate-900/40 shadow-sm flex items-center gap-3">
+            <div class="w-9 h-9 bg-rose-500/10 text-rose-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                <i data-lucide="x-circle" class="w-5 h-5"></i>
+            </div>
+            <div>
+                <div class="font-mono text-base font-black text-slate-800 dark:text-white">{{ wrong }}</div>
+                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Wrong</div>
+            </div>
+        </div>
+
+        <div
+            class="glass p-5 rounded-2xl border border-slate-200 dark:border-slate-700/60 bg-white/40 dark:bg-slate-900/40 shadow-sm flex items-center gap-3">
+            <div
+                class="w-9 h-9 bg-slate-500/10 text-slate-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                <i data-lucide="help-circle" class="w-5 h-5"></i>
+            </div>
+            <div>
+                <div class="font-mono text-base font-black text-slate-800 dark:text-white">{{ unanswered }}</div>
+                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Unanswered</div>
+            </div>
+        </div>
+
+        <div
+            class="glass p-5 rounded-2xl border border-slate-200 dark:border-slate-700/60 bg-white/40 dark:bg-slate-900/40 shadow-sm flex items-center gap-3">
+            <div
+                class="w-9 h-9 bg-indigo-500/10 text-indigo-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                <i data-lucide="list" class="w-5 h-5"></i>
+            </div>
+            <div>
+                <div class="font-mono text-base font-black text-slate-800 dark:text-white">{{ total_questions }}</div>
+                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Total Pool</div>
+            </div>
+        </div>
+    </div>
+
+    <div
+        class="glass p-6 rounded-[2.5rem] border border-slate-200 dark:border-slate-700/60 bg-white/40 dark:bg-slate-900/40 shadow-md">
+
+        <div class="flex items-center justify-between border-b dark:border-slate-800 pb-3 mb-5">
+            <div class="flex items-center gap-2">
+                <i data-lucide="history" class="w-5 h-5 text-purple-500"></i>
+                <h3 class="text-sm font-black text-slate-700 dark:text-white uppercase tracking-widest">
+                    Daily Challenge History
+                </h3>
+            </div>
+
+            <span class="text-xs text-slate-400">
+                Total Attempts: {{ history|length }}
+            </span>
+        </div>
+
+        {% if history %}
+
+        <div class="overflow-x-auto rounded-2xl">
+            <table class="w-full text-sm">
+
+                <thead>
+                    <tr class="border-b dark:border-slate-700 text-slate-500 uppercase text-[11px] tracking-wider">
+                        <th class="text-left py-3">Date</th>
+                        <th class="text-center py-3">Score</th>
+                        <th class="text-center py-3">Correct</th>
+                        <th class="text-center py-3">Wrong</th>
+                        <th class="text-center py-3">XP</th>
+                        <th class="text-center py-3">Coins</th>
+                        <th class="text-center py-3">Time</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for item in history %}
+
+                    <tr
+                        class="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+
+                        <td class="py-4">
+                            {{ item.challenge_date.strftime('%d %b %Y') }}
+                        </td>
+
+                        <td class="text-center font-bold text-purple-600">
+                            {{ item.score }}%
+                        </td>
+
+                        <td class="text-center text-green-500">
+                            {{ item.correct }}
+                        </td>
+
+                        <td class="text-center text-red-500">
+                            {{ item.wrong }}
+                        </td>
+
+                        <td class="text-center">
+                            {{ item.xp_earned }}
+                        </td>
+
+                        <td class="text-center">
+                            {{ item.coins_earned }}
+                        </td>
+
+                        <td class="text-center">
+                            {{ (item.time_taken // 60) }}m {{ (item.time_taken % 60) }}s
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+        </div>
+
+        {% else %}
+
+        <div class="py-10 text-center">
+
+            <i data-lucide="history" class="w-12 h-12 mx-auto text-slate-300 mb-4"></i>
+
+            <h3 class="font-bold text-slate-700 dark:text-white">
+                No Challenge History
+            </h3>
+
+            <p class="text-sm text-slate-400 mt-2">
+                Complete your first Daily Challenge to see your history here.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+    <div class="flex flex-col sm:flex-row gap-4 items-center justify-between pt-4 select-none">
+        <a href="/index"
+            class="w-full sm:w-auto text-center px-6 py-3.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 font-bold text-xs rounded-xl transition-all shadow-sm flex items-center justify-center gap-1">
+            <i data-lucide="home" class="w-4 h-4"></i> Return Home
+        </a>
+        <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+            <a href="/practice_arena"
+                class="w-full sm:w-auto text-center px-6 py-3.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 font-bold text-xs rounded-xl transition-all shadow-sm flex items-center justify-center gap-1">
+                <i data-lucide="award" class="w-4 h-4"></i> Practice Arena
+            </a>
+            <a href="/daily_challenge"
+                class="w-full sm:w-auto text-center px-8 py-3.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-95 text-white font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-1.5">
+                <i data-lucide="zap" class="w-4 h-4 fill-white/20"></i> Daily Challenge
+            </a>
+        </div>
+    </div>
+
+    <footer
+        class="text-center pt-8 border-t border-slate-200/50 dark:border-slate-800/50 text-slate-400 dark:text-slate-500 font-medium text-xs leading-normal select-none tracking-wide">
+        Come back tomorrow for a brand new Daily Challenge.
+    </footer>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    });
+</script>
+<style>
+    .glass {
+        background: rgba(255, 255, 255, 0.45);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
+
+    .dark .glass {
+        background: rgba(30, 41, 59, 0.45);
+    }
+</style>
+{% endblock %}

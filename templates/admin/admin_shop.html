@@ -1,0 +1,323 @@
+{% extends "base.html" %}
+{% block title %}Shop Management Panel - QuizMaster Admin{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-6 pb-12 animate-[fadeInUp_0.4s_ease-out]">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="p-4 rounded-xl text-xs font-black uppercase tracking-wider {% if category=='error' %}bg-rose-500/10 text-rose-500 border border-rose-500/20{% else %}bg-emerald-500/10 text-emerald-500 border border-emerald-500/20{% endif %}">
+              {{ msg }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="border-b dark:border-slate-800 pb-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h1 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight">Shop Management</h1>
+            <p class="text-sm text-slate-400 mt-0.5">Manage all reward shop items.</p>
+        </div>
+        
+        <div class="flex items-center gap-2 select-none">
+            <button onclick="scrollToFormFocus()" class="px-4 py-2.5 bg-primary hover:bg-indigo-600 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition-all flex items-center gap-1.5 active:scale-95">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i> Add Item
+            </button>
+            <button onclick="window.print()" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs uppercase tracking-wider rounded-xl border dark:border-slate-700 transition-all flex items-center gap-1.5">
+                <i data-lucide="download" class="w-4 h-4"></i> Export
+            </button>
+            <button onclick="window.location.reload()" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs uppercase tracking-wider rounded-xl border dark:border-slate-700 transition-all flex items-center gap-1.5">
+                <i data-lucide="refresh-cw" class="w-4 h-4"></i> Refresh
+            </button>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 text-xs font-semibold select-none">
+        <div class="glass p-5 rounded-3xl border border-slate-200 dark:border-slate-800 flex items-center justify-between bg-white/50 dark:bg-slate-900/40 shadow-sm">
+            <div>
+                <span class="text-slate-400 font-bold uppercase text-[9px] tracking-wider block">Total Products</span>
+                <span class="text-2xl font-black text-slate-800 dark:text-white mt-1 block">{{ items|length if items else 0 }}</span>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center"><i data-lucide="package" class="w-5 h-5"></i></div>
+        </div>
+
+        <div class="glass p-5 rounded-3xl border border-slate-200 dark:border-slate-800 flex items-center justify-between bg-white/50 dark:bg-slate-900/40 shadow-sm">
+            <div>
+                <span class="text-slate-400 font-bold uppercase text-[9px] tracking-wider block">Out of Stock</span>
+                <span class="text-2xl font-black text-rose-500 mt-1 block">
+                    {% set oos_count = namespace(value=0) %}
+                    {% for item in items %}
+                        {% if item.stock <= 0 %}
+                            {% set oos_count.value = oos_count.value + 1 %}
+                        {% endif %}
+                    {% endfor %}
+                    {{ oos_count.value }}
+                </span>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center"><i data-lucide="alert-octagon" class="w-5 h-5"></i></div>
+        </div>
+
+        <div class="glass p-5 rounded-3xl border border-slate-200 dark:border-slate-800 flex items-center justify-between bg-white/50 dark:bg-slate-900/40 shadow-sm">
+            <div>
+                <span class="text-slate-400 font-bold uppercase text-[9px] tracking-wider block">Low Stock</span>
+                <span class="text-2xl font-black text-amber-500 mt-1 block">
+                    {% set low_count = namespace(value=0) %}
+                    {% for item in items %}
+                        {% if item.stock > 0 and item.stock <= 5 %}
+                            {% set low_count.value = low_count.value + 1 %}
+                        {% endif %}
+                    {% endfor %}
+                    {{ low_count.value }}
+                </span>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center"><i data-lucide="alert-triangle" class="w-5 h-5"></i></div>
+        </div>
+
+        <div class="glass p-5 rounded-3xl border border-slate-200 dark:border-slate-800 flex items-center justify-between bg-white/50 dark:bg-slate-900/40 shadow-sm">
+            <div>
+                <span class="text-slate-400 font-bold uppercase text-[9px] tracking-wider block">Total Orders</span>
+                <span class="text-2xl font-black text-emerald-500 mt-1 block">{{ total_purchases_count | default(0) }}</span>
+            </div>
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center"><i data-lucide="shopping-cart" class="w-5 h-5"></i></div>
+        </div>
+    </div>
+
+    <div class="glass p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 shadow-sm">
+        <form method="GET" action="{{ url_for('admin_shop') }}" class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-semibold">
+            <div class="relative w-full">
+                <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" name="search" value="{{ search if search else '' }}" placeholder="Search by item name..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 text-slate-800 dark:text-white outline-none focus:border-primary shadow-sm">
+            </div>
+            
+            <select name="category" onchange="this.form.submit()" class="px-4 py-2.5 rounded-xl border dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary shadow-sm">
+                <option value="">All Categories</option>
+                <option value="Accessories" {% if category == 'Accessories' %}selected{% endif %}>Accessories</option>
+                <option value="Profile" {% if category == 'Profile' %}selected{% endif %}>Profile Items</option>
+                <option value="Badges" {% if category == 'Badges' %}selected{% endif %}>Badges</option>
+                <option value="Frames" {% if category == 'Frames' %}selected{% endif %}>Frames</option>
+                <option value="Collectibles" {% if category == 'Collectibles' %}selected{% endif %}>Collectibles</option>
+            </select>
+
+            <select name="stock_status" onchange="this.form.submit()" class="px-4 py-2.5 rounded-xl border dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary shadow-sm">
+                <option value="">All Stock Statuses</option>
+                <option value="in_stock" {% if stock_status == 'in_stock' %}selected{% endif %}>In Stock</option>
+                <option value="low_stock" {% if stock_status == 'low_stock' %}selected{% endif %}>Low Stock (&lt;=5)</option>
+                <option value="out_of_stock" {% if stock_status == 'out_of_stock' %}selected{% endif %}>Out of Stock</option>
+            </select>
+
+            <select name="sort" onchange="this.form.submit()" class="px-4 py-2.5 rounded-xl border dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary shadow-sm">
+                <option value="newest" {% if sort == 'newest' or not sort %}selected{% endif %}>Newest</option>
+                <option value="oldest" {% if sort == 'oldest' %}selected{% endif %}>Oldest</option>
+                <option value="highest_price" {% if sort == 'highest_price' %}selected{% endif %}>Highest Price</option>
+                <option value="lowest_price" {% if sort == 'lowest_price' %}selected{% endif %}>Lowest Price</option>
+            </select>
+        </form>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        
+        <div id="productFormPane" class="glass p-6 rounded-[2rem] border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 shadow-sm space-y-4">
+            <div>
+                <h2 id="formPaneTitle" class="text-sm font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                    {% if editing_item %}🛠 Edit Product Specifications{% else %}➕ Add New Product Entry{% endif %}
+                </h2>
+                <p class="text-[10px] text-slate-400 mt-0.5">Fill out reward specifications to synchronize database entries.</p>
+            </div>
+
+            <form id="shopProductForm" method="POST" action="{% if editing_item %}/admin/shop/update/{{ editing_item.id }}{% else %}/admin/shop/add{% endif %}" class="space-y-4 text-xs font-semibold">
+                <div class="flex flex-col space-y-1">
+                    <label class="text-slate-400">Image Asset URL Path</label>
+                    <input type="text" name="image_url" id="field_image_url" value="{{ editing_item.image_url if editing_item else '' }}" placeholder="/static/images/rewards/badge.png" class="px-4 py-2.5 rounded-xl border dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 text-slate-800 dark:text-white outline-none focus:border-primary shadow-sm">
+                </div>
+
+                <div class="flex flex-col space-y-1">
+                    <label class="text-slate-400">Item Name</label>
+                    <input type="text" name="name" id="field_name" value="{{ editing_item.name if editing_item else '' }}" required placeholder="e.g. Master Hacker Badge" class="px-4 py-2.5 rounded-xl border dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 text-slate-800 dark:text-white outline-none focus:border-primary shadow-sm">
+                </div>
+
+                <div class="flex flex-col space-y-1">
+                    <label class="text-slate-400">Description Summary</label>
+                    <textarea name="description" id="field_description" required placeholder="Describe item unlocks or parameters details..." rows="3" class="px-4 py-2.5 rounded-xl border dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 text-slate-800 dark:text-white outline-none focus:border-primary shadow-sm resize-none">{{ editing_item.description if editing_item else '' }}</textarea>
+                </div>
+
+                <div class="flex flex-col space-y-1">
+                    <label class="text-slate-400">Category Tier</label>
+                    <select name="category" id="field_category" required class="px-4 py-2.5 rounded-xl border dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary shadow-sm">
+                        <option value="Accessories" {% if editing_item and editing_item.category == 'Accessories' %}selected{% endif %}>Accessories</option>
+                        <option value="Profile" {% if editing_item and editing_item.category == 'Profile' %}selected{% endif %}>Profile Items</option>
+                        <option value="Badges" {% if editing_item and editing_item.category == 'Badges' %}selected{% endif %}>Badges</option>
+                        <option value="Frames" {% if editing_item and editing_item.category == 'Frames' %}selected{% endif %}>Frames</option>
+                        <option value="Collectibles" {% if editing_item and editing_item.category == 'Collectibles' %}selected{% endif %}>Collectibles</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="flex flex-col space-y-1">
+                        <label class="text-slate-400">Price (Coins)</label>
+                        <input type="number" name="price" id="field_price" value="{{ editing_item.price if editing_item else 0 }}" min="0" required class="px-4 py-2.5 rounded-xl border dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 text-slate-800 dark:text-white outline-none focus:border-primary shadow-sm">
+                    </div>
+                    <div class="flex flex-col space-y-1">
+                        <label class="text-slate-400">Stock Count</label>
+                        <input type="number" name="stock" id="field_stock" value="{{ editing_item.stock if editing_item else 100 }}" min="0" required class="px-4 py-2.5 rounded-xl border dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 text-slate-800 dark:text-white outline-none focus:border-primary shadow-sm">
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 pt-1 select-none">
+                    <input type="checkbox" name="is_unique" id="field_is_unique" {% if editing_item and editing_item.is_unique %}checked{% elif not editing_item %}checked{% endif %} class="w-4 h-4 accent-primary rounded cursor-pointer">
+                    <label for="field_is_unique" class="text-slate-600 dark:text-slate-300 cursor-pointer">Unique Item (Limit 1 per user account)</label>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2 border-t dark:border-slate-800/60">
+                    {% if editing_item %}
+                    <a href="/admin/shop" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl transition-all">Cancel</a>
+                    {% endif %}
+                    <button type="submit" class="px-6 py-2.5 bg-primary hover:bg-indigo-600 text-white font-black uppercase tracking-wider rounded-xl shadow-md transition-all active:scale-[0.98]">
+                        Save Product
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="lg:col-span-2 glass rounded-[2rem] border border-slate-200 dark:border-slate-700 overflow-hidden bg-white/30 dark:bg-slate-900/20 shadow-md">
+            <div class="w-full overflow-x-auto">
+                <table class="w-full text-left text-xs border-collapse">
+                    <thead>
+                        <tr class="bg-slate-100/70 dark:bg-slate-900/60 text-slate-400 font-black uppercase tracking-wider border-b dark:border-slate-800 select-none">
+                            <th class="p-4 text-center w-20">Image</th>
+                            <th class="p-4">Item Name</th>
+                            <th class="p-4">Category</th>
+                            <th class="p-4 text-center">Price</th>
+                            <th class="p-4 text-center">Stock</th>
+                            <th class="p-4 text-center">Purchased</th>
+                            <th class="p-4">Created Date</th>
+                            <th class="p-4 text-right pr-6 w-24">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60 font-semibold text-slate-700 dark:text-slate-300">
+                        {% for item in items %}
+                        <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/10 transition-colors duration-150">
+                            <td class="p-4 text-center select-none">
+                                <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 border text-slate-400 dark:border-slate-700 flex items-center justify-center overflow-hidden mx-auto">
+                                    {% if item.image_url %}
+                                    <img src="{{ item.image_url }}" alt="{{ item.name }}" class="w-full h-full object-cover">
+                                    {% else %}
+                                    <i data-lucide="image" class="w-4 h-4 text-text-muted"></i>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="p-4">
+                                <div class="font-black text-slate-800 dark:text-white leading-tight">
+                                    {{ item.name }}
+                                </div>
+                                <div class="text-[10px] text-slate-400 font-normal truncate max-w-[180px] mt-0.5">
+                                    {{ item.description }}
+                                </div>
+                            </td>
+                            <td class="p-4">
+                                <span class="text-[9px] bg-primary/10 text-primary px-2 py-0.5 rounded font-black uppercase tracking-wider">
+                                    {{ item.category }}
+                                </span>
+                            </td>
+                            <td class="p-4 text-center font-mono text-yellow-600 dark:text-yellow-400 font-bold">
+                                {{ item.price }}c
+                            </td>
+                            <td class="p-4 text-center font-mono">
+                                <span class="{% if item.stock <= 0 %}text-rose-500 font-bold{% elif item.stock <= 5 %}text-amber-500 font-bold{% else %}text-slate-600 dark:text-slate-400{% endif %}">
+                                    {{ item.stock }}
+                                </span>
+                            </td>
+                            <td class="p-4 text-center font-mono text-slate-500 dark:text-slate-400">
+                                {{ item.purchasers|length if item.purchasers else 0 }}
+                            </td>
+                            <td class="p-4 font-mono text-slate-400 text-[11px]">
+                                {{ item.created_at.strftime('%d %b %Y') if item.created_at else '--' }}
+                            </td>
+                            <td class="p-4 text-right pr-6 select-none">
+                                <div class="inline-flex gap-1.5">
+                                    <button onclick="populateFormForEdition('{{ item.id }}', '{{ item.name|escape }}', '{{ item.description|escape }}', '{{ item.category }}', '{{ item.price }}', '{{ item.stock }}', '{{ item.image_url }}', '{{ item.is_unique }}')" class="p-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-xl transition-all" title="Edit Parameters Line">
+                                        <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                    <button onclick="triggerDeleteConfirmation('{{ item.id }}', '{{ item.name|escape }}')" class="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 rounded-xl transition-all" title="Purge Product Entry">
+                                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colSpan="8" class="py-16 text-center text-slate-400 font-medium select-none">
+                                <div class="w-16 h-16 bg-slate-100 dark:bg-slate-800 text-slate-300 dark:text-slate-600 rounded-full flex items-center justify-center shadow-inner mx-auto mb-3">
+                                    <i data-lucide="package-open" class="w-8 h-8"></i>
+                                </div>
+                                <h3 class="text-base font-black text-slate-800 dark:text-white">No Catalog Items Found</h3>
+                                <p class="text-xs text-slate-400 max-w-xs mx-auto mt-0.5">No reward shop rows matched the configured index query filters context.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="deleteConfirmationModal" class="fixed inset-0 z-[150] hidden flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-[fadeIn_0.2s_ease-out]">
+    <div class="glass w-full max-w-md p-6 rounded-[2rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl space-y-4 text-center">
+        <div class="w-12 h-12 bg-rose-500/10 text-rose-500 rounded-full flex items-center justify-center mx-auto">
+            <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+        </div>
+        <div>
+            <h3 class="text-lg font-black text-slate-800 dark:text-white tracking-tight">Confirm Record Purge</h3>
+            <p class="text-xs text-slate-400 mt-1 leading-normal">
+                Are you absolutely sure you want to permanently clear <span id="deleteModalItemTargetName" class="font-black text-slate-700 dark:text-slate-200"></span> from the rewards store inventory index? This action cannot be undone.
+            </p>
+        </div>
+        <form id="deleteProductConfirmedForm" method="POST" action="">
+            <div class="grid grid-cols-2 gap-3 pt-2 text-xs font-bold">
+                <button type="button" onclick="closeDeleteConfirmationModal()" class="w-full py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl transition-all">
+                    Cancel Operation
+                </button>
+                <button type="submit" class="w-full py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl shadow-md transition-all">
+                    Purge Permanently
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function scrollToFormFocus() {
+        document.getElementById('productFormPane').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        document.getElementById('field_name').focus();
+    }
+
+    function populateFormForEdition(id, name, description, category, price, stock, imageUrl, isUnique) {
+        document.getElementById('formPaneTitle').innerText = "🛠 Edit Product Specifications";
+        document.getElementById('shopProductForm').action = "/admin/shop/update/" + id;
+        
+        document.getElementById('field_name').value = name;
+        document.getElementById('field_description').value = description;
+        document.getElementById('field_category').value = category;
+        document.getElementById('field_price').value = price;
+        document.getElementById('field_stock').value = stock;
+        document.getElementById('field_image_url').value = imageUrl;
+        document.getElementById('field_is_unique').checked = (isUnique === 'True' || isUnique === 'true');
+        
+        scrollToFormFocus();
+    }
+
+    function triggerDeleteConfirmation(id, name) {
+        document.getElementById('deleteModalItemTargetName').innerText = '"' + name + '"';
+        document.getElementById('deleteProductConfirmedForm').action = "/admin/shop/delete/" + id;
+        document.getElementById('deleteConfirmationModal').classList.remove('hidden');
+    }
+
+    function closeDeleteConfirmationModal() {
+        document.getElementById('deleteConfirmationModal').classList.add('hidden');
+    }
+</script>
+{% endblock %}

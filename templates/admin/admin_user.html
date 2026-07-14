@@ -1,0 +1,355 @@
+{% extends "base.html" %}
+{% block title %}User Management - QuizMaster Admin{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-6 pb-12 animate-[fadeInUp_0.4s_ease-out]">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, msg in messages %}
+    <div
+        class="p-4 rounded-xl text-xs font-black uppercase tracking-wider {% if category=='error' %}bg-rose-500/10 text-rose-500 border border-rose-500/20{% else %}bg-emerald-500/10 text-emerald-500 border border-emerald-500/20{% endif %}">
+        {{ msg }}
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <div
+        class="border-b dark:border-slate-800 pb-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h1 class="text-3xl font-black text-slate-800 dark:text-white tracking-tight">User Management</h1>
+            <p class="text-sm text-slate-400 mt-0.5">Manage all registered users of the QuizMaster platform.</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-6 gap-4 text-xs font-semibold select-none">
+        <div
+            class="glass p-4 rounded-3xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between bg-white/50 dark:bg-slate-900/40 shadow-sm">
+            <span class="text-slate-400 font-bold uppercase text-[9px] tracking-wider block">Total Users</span>
+            <span class="text-xl font-black text-slate-800 dark:text-white mt-1 block font-mono">{{ stats.total_users
+                }}</span>
+        </div>
+        <div
+            class="glass p-4 rounded-3xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between bg-white/50 dark:bg-slate-900/40 shadow-sm">
+            <span class="text-slate-400 font-bold uppercase text-[9px] tracking-wider block">Total Admins</span>
+            <span class="text-xl font-black text-primary mt-1 block font-mono">{{ stats.total_admins }}</span>
+        </div>
+        <div
+            class="glass p-4 rounded-3xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between bg-white/50 dark:bg-slate-900/40 shadow-sm">
+            <span class="text-slate-400 font-bold uppercase text-[9px] tracking-wider block">Coins Given</span>
+            <span class="text-xl font-black text-yellow-600 dark:text-yellow-400 mt-1 block font-mono">{{
+                stats.total_coins }}c</span>
+        </div>
+        <div
+            class="glass p-4 rounded-3xl border border-slate-200 dark:border-slate-800 flex flex-col justify-between bg-white/50 dark:bg-slate-900/40 shadow-sm">
+            <span class="text-slate-400 font-bold uppercase text-[9px] tracking-wider block">Avg Level</span>
+            <span class="text-xl font-black text-orange-500 mt-1 block font-mono">{{ stats.avg_level }}</span>
+        </div>
+    </div>
+
+    <div
+        class="glass p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/40 shadow-sm">
+        <form method="GET" action="/admin/users"
+            class="w-full grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-semibold">
+            <div class="relative w-full sm:col-span-2">
+                <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" name="search" value="{{ search }}"
+                    placeholder="Search by First Name, Last Name, or Email Address..."
+                    class="w-full pl-10 pr-4 py-2.5 rounded-xl border dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 text-slate-800 dark:text-white outline-none focus:border-primary shadow-sm">
+            </div>
+
+            <select name="filter" onchange="this.form.submit()"
+                class="px-4 py-2.5 rounded-xl border dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-primary shadow-sm">
+                <option value="all" {% if filter=='all' %}selected{% endif %}>All Users Matrix</option>
+                <option value="admins" {% if filter=='admins' %}selected{% endif %}>Administrators Only</option>
+                <option value="students" {% if filter=='students' %}selected{% endif %}>Standard Students Pool</option>
+                <option value="highest_level" {% if filter=='highest_level' %}selected{% endif %}>Sort: Highest Level
+                </option>
+                <option value="lowest_level" {% if filter=='lowest_level' %}selected{% endif %}>Sort: Lowest Level
+                </option>
+                <option value="newest" {% if filter=='newest' %}selected{% endif %}>Sort: Newest Entries</option>
+                <option value="oldest" {% if filter=='oldest' %}selected{% endif %}>Sort: Oldest Entries</option>
+            </select>
+        </form>
+    </div>
+
+    <div
+        class="glass rounded-[2rem] border border-slate-200 dark:border-slate-700 overflow-hidden bg-white/30 dark:bg-slate-900/20 shadow-md">
+        <div class="w-full overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse min-w-[1200px]">
+                <thead>
+                    <tr
+                        class="bg-slate-100/70 dark:bg-slate-900/60 text-slate-400 font-black uppercase tracking-wider border-b dark:border-slate-800 select-none">
+                        <th class="p-4 text-center w-20">Avatar</th>
+                        <th class="p-4 text-center w-16">ID</th>
+                        <th class="p-4">First Name</th>
+                        <th class="p-4">Last Name</th>
+                        <th class="p-4">Email Address</th>
+                        <th class="p-4">Role</th>
+                        <th class="p-4 text-center">Level</th>
+                        <th class="p-4 text-center">XP</th>
+                        <th class="p-4 text-center">Coins</th>
+                        <th class="p-4 text-center">Streak</th>
+                        <th class="p-4">Created Date</th>
+                        <th class="p-4 text-center">Status</th>
+                        <th class="p-4 text-right pr-6 w-28">Actions</th>
+                    </tr>
+                </thead>
+                <tbody
+                    class="divide-y divide-slate-100 dark:divide-slate-800/60 font-semibold text-slate-700 dark:text-slate-300">
+                    {% for row in users %}
+                    <tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/10 transition-colors duration-150">
+                        <td class="p-4 text-center select-none">
+                            <div
+                                class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 border text-slate-400 dark:border-slate-700 flex items-center justify-center overflow-hidden mx-auto">
+                                <img src="/static/images/avatars/{{ row.profile_image if row.profile_image else 'default_user.png' }}"
+                                    class="w-full h-full object-cover">
+                            </div>
+                        </td>
+                        <td class="p-4 text-center font-mono text-slate-400">#{{ "%03d" | format(row.id) }}</td>
+                        <td class="p-4 font-black text-slate-800 dark:text-white">{{ row.first_name }}</td>
+                        <td class="p-4 font-black text-slate-800 dark:text-white">{{ row.last_name }}</td>
+                        <td class="p-4 font-mono text-slate-500 dark:text-slate-400 text-[11px]">{{ row.email }}</td>
+                        <td class="p-4">
+                            <span
+                                class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider {% if row.role == 'admin' %}bg-primary/10 text-primary{% else %}bg-slate-100 dark:bg-slate-800 text-slate-400{% endif %}">
+                                {{ row.role }}
+                            </span>
+                        </td>
+                        <td class="p-4 text-center font-mono text-orange-500 font-bold">{{ row.level }}</td>
+                        <td class="p-4 text-center font-mono text-slate-400">{{ row.xp }}</td>
+                        <td class="p-4 text-center font-mono text-yellow-600 dark:text-yellow-400 font-bold">{{
+                            row.coins }}c</td>
+                        <td class="p-4 text-center font-mono text-orange-600">{{ row.streak }}d</td>
+                        <td class="p-4 font-mono text-slate-400 text-[11px]">{{ row.created_at.strftime('%d %b %Y') if
+                            row.created_at else '--' }}</td>
+                        <td class="p-4 text-center select-none">
+                            <span
+                                class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-400">
+                                Offline
+                            </span>
+                        </td>
+                        <td class="p-4 text-right pr-6 select-none">
+                            <div class="inline-flex gap-1">
+                                <button
+                                    onclick="document.getElementById('viewModal-{{ row.id }}').classList.remove('hidden')"
+                                    class="p-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-lg hover:bg-slate-200 transition-all">
+                                    <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                                </button>
+                                <button
+                                    onclick="document.getElementById('editModal-{{ row.id }}').classList.remove('hidden')"
+                                    class="p-1.5 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg transition-all">
+                                    <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
+                                </button>
+                                <button
+                                    onclick="document.getElementById('deleteModal-{{ row.id }}').classList.remove('hidden')"
+                                    class="p-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 rounded-lg transition-all">
+                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colSpan="13" class="py-16 text-center text-slate-400 font-medium select-none">
+                            <h3 class="text-base font-black text-slate-800 dark:text-white">No Matching Profiles Found
+                            </h3>
+                            <p class="text-xs text-slate-400 max-w-xs mx-auto mt-0.5">No identity registry records
+                                matched your structural index query filters parameter keys.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% for row in users %}
+<div id="viewModal-{{ row.id }}"
+    class="fixed inset-0 z-[150] hidden flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-[fadeIn_0.2s_ease-out]">
+    <div
+        class="glass w-full max-w-md p-6 rounded-[2rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl space-y-4">
+        <div class="flex items-center gap-4 border-b dark:border-slate-800 pb-4">
+            <div class="w-16 h-16 rounded-full overflow-hidden border-2 border-primary bg-slate-100 select-none">
+                <img src="/static/images/avatars/{{ row.profile_image if row.profile_image else 'default_user.png' }}"
+                    class="w-full h-full object-cover">
+            </div>
+            <div>
+                <h3 class="text-lg font-black text-slate-800 dark:text-white tracking-tight">{{ row.first_name }} {{
+                    row.last_name }}</h3>
+                <span
+                    class="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded font-black uppercase tracking-wider">{{
+                    row.role }}</span>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 text-xs font-semibold">
+            <div class="col-span-2">
+                <span class="text-slate-400 block text-[10px] uppercase">Email Address</span>
+                <span class="text-slate-800 dark:text-white font-mono select-all">{{ row.email }}</span>
+            </div>
+            <div>
+                <span class="text-slate-400 block text-[10px] uppercase">Current Level</span>
+                <span class="text-slate-800 dark:text-white font-mono">{{ row.level }}</span>
+            </div>
+            <div>
+                <span class="text-slate-400 block text-[10px] uppercase">Current XP</span>
+                <span class="text-slate-800 dark:text-white font-mono">{{ row.xp }}</span>
+            </div>
+            <div>
+                <span class="text-slate-400 block text-[10px] uppercase">Coins Balance</span>
+                <span class="text-yellow-600 dark:text-yellow-400 font-mono">{{ row.coins }}c</span>
+            </div>
+            <div>
+                <span class="text-slate-400 block text-[10px] uppercase">Active Streak</span>
+                <span class="text-orange-600 font-mono">{{ row.streak }} Days</span>
+            </div>
+            <div>
+                <span class="text-slate-400 block text-[10px] uppercase">Quiz Attempts</span>
+                <span class="text-slate-800 dark:text-white font-mono">{{ row.total_quizzes }}</span>
+            </div>
+            <div>
+                <span class="text-slate-400 block text-[10px] uppercase">Daily Puzzles</span>
+                <span class="text-slate-800 dark:text-white font-mono">{{ row.total_challenges }}</span>
+            </div>
+            <div class="col-span-2">
+                <span class="text-slate-400 block text-[10px] uppercase">Achievements Earned</span>
+                <span class="text-slate-800 dark:text-white font-mono">{{ row.achievements_count }} Unlocked</span>
+            </div>
+            <div class="col-span-2 border-t dark:border-slate-800 pt-2 text-slate-400 text-[10px]">
+                Member Since: {{ row.created_at.strftime('%d %B %Y') if row.created_at else 'July 2026' }}
+            </div>
+        </div>
+        <div class="flex justify-end pt-2 select-none">
+            <button type="button" onclick="document.getElementById('viewModal-{{ row.id }}').classList.add('hidden')"
+                class="px-5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs rounded-xl transition-all">Close</button>
+        </div>
+    </div>
+</div>
+
+<div id="editModal-{{ row.id }}"
+    class="fixed inset-0 z-[150] hidden flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-[fadeIn_0.2s_ease-out]">
+    <div
+        class="glass w-full max-w-lg p-6 rounded-[2rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl space-y-4">
+        <div>
+            <h3 class="text-base font-black uppercase tracking-wider text-slate-700 dark:text-slate-300">🛠 Modify
+                Profile Parameters</h3>
+            <p class="text-[10px] text-slate-400 mt-0.5">Edit structural user account identity parameters values context
+                layers.</p>
+        </div>
+        <form method="POST" action="/admin/users/edit/{{ row.id }}" class="space-y-3 text-xs font-semibold">
+            <div class="grid grid-cols-2 gap-3">
+                <div class="flex flex-col space-y-1">
+                    <label class="text-slate-400">First Name</label>
+                    <input type="text" name="first_name" value="{{ row.first_name }}" required
+                        class="px-3 py-2 rounded-lg border dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white outline-none">
+                </div>
+                <div class="flex flex-col space-y-1">
+                    <label class="text-slate-400">Last Name</label>
+                    <input type="text" name="last_name" value="{{ row.last_name }}" required
+                        class="px-3 py-2 rounded-lg border dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white outline-none">
+                </div>
+            </div>
+            <div class="flex flex-col space-y-1">
+                <label class="text-slate-400">Email Address</label>
+                <input type="email" name="email" value="{{ row.email }}" required
+                    class="px-3 py-2 rounded-lg border dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white outline-none">
+            </div>
+            <div class="flex flex-col space-y-1">
+                <label class="text-slate-400">Password (Leave blank to keep unchanged)</label>
+                <input type="text" name="password" placeholder="••••••••"
+                    class="px-3 py-2 rounded-lg border dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white outline-none">
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="flex flex-col space-y-1">
+                    <label class="text-slate-400">System Access Role</label>
+                    <select name="role" required
+                        class="px-3 py-2 rounded-lg border dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 outline-none">
+                        <option value="user" {% if row.role=='user' %}selected{% endif %}>User (Student)</option>
+                        <option value="admin" {% if row.role=='admin' %}selected{% endif %}>Administrator</option>
+                    </select>
+                </div>
+                <div class="flex flex-col space-y-1">
+                    <label class="text-slate-400">Avatar Filename Path</label>
+                    <input type="text" name="profile_image"
+                        value="{{ row.profile_image if row.profile_image else 'default_user.png' }}" required
+                        class="px-3 py-2 rounded-lg border dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white outline-none">
+                </div>
+            </div>
+            <div class="grid grid-cols-4 gap-2">
+                <div class="flex flex-col space-y-1">
+                    <label class="text-slate-400 text-[10px]">Level</label>
+                    <input type="number" name="level" value="{{ row.level }}" min="1" required
+                        class="px-2 py-2 rounded-lg border dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white font-mono">
+                </div>
+                <div class="flex flex-col space-y-1">
+                    <label class="text-slate-400 text-[10px]">XP Balance</label>
+                    <input type="number" name="xp" value="{{ row.xp }}" min="0" required
+                        class="px-2 py-2 rounded-lg border dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white font-mono">
+                </div>
+                <div class="flex flex-col space-y-1">
+                    <label class="text-slate-400 text-[10px]">Coins</label>
+                    <input type="number" name="coins" value="{{ row.coins }}" min="0" required
+                        class="px-2 py-2 rounded-lg border dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white font-mono">
+                </div>
+                <div class="flex flex-col space-y-1">
+                    <label class="text-slate-400 text-[10px]">Streak</label>
+                    <input type="number" name="streak" value="{{ row.streak }}" min="0" required
+                        class="px-2 py-2 rounded-lg border dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-white font-mono">
+                </div>
+            </div>
+            <div class="flex justify-end gap-2 pt-2 select-none">
+                <button type="button"
+                    onclick="document.getElementById('editModal-{{ row.id }}').classList.add('hidden')"
+                    class="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl">Cancel</button>
+                <button type="submit"
+                    class="px-6 py-2 bg-primary hover:bg-indigo-600 text-white font-black uppercase tracking-wider rounded-xl shadow-md">Save
+                    Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="deleteModal-{{ row.id }}"
+    class="fixed inset-0 z-[150] hidden flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-[fadeIn_0.2s_ease-out]">
+    <div
+        class="glass w-full max-w-md p-6 rounded-[2rem] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl space-y-4 text-center">
+        <div class="w-12 h-12 bg-rose-500/10 text-rose-500 rounded-full flex items-center justify-center mx-auto">
+            <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+        </div>
+        <div>
+            <h3 class="text-lg font-black text-slate-800 dark:text-white tracking-tight">Confirm Record Purge</h3>
+            <p class="text-xs text-slate-400 mt-1 leading-normal">
+                Are you absolutely sure you want to permanently clear <span
+                    class="font-black text-slate-700 dark:text-slate-200">"{{ row.first_name }} {{ row.last_name
+                    }}"</span> from the platform index registry? This action cannot be undone.
+            </p>
+        </div>
+        <form method="POST" action="/admin/users/delete/{{ row.id }}">
+            <div class="grid grid-cols-2 gap-3 pt-2 text-xs font-bold select-none">
+                <button type="button"
+                    onclick="document.getElementById('deleteModal-{{ row.id }}').classList.add('hidden')"
+                    class="w-full py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl">
+                    Cancel Operation
+                </button>
+                <button type="submit"
+                    class="w-full py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl shadow-md">
+                    Purge Permanently
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    });
+</script>
+{% endblock %}

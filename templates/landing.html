@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuizMaster | Premium Quiz Learning Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .active-nav {
+            color: #4f46e5 !important;
+            font-weight: 800;
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900">
+
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 border-b border-transparent">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white"><i
+                        data-lucide="layers"></i></div>
+                <span class="text-2xl font-black">QuizMaster</span>
+            </div>
+            <div class="hidden lg:flex items-center gap-8 font-bold text-slate-600">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#languages" class="nav-link">Languages</a>
+                <a href="#about" class="nav-link">About</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="/login" class="font-bold hover:text-indigo-600">Login</a>
+                <a href="/signup"
+                    class="px-6 py-3 bg-indigo-600 text-white rounded-full font-bold hover:bg-indigo-700 hover:scale-105 transition-all">Sign
+                    Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home"
+        class="pt-32 pb-20 px-6 min-h-screen flex items-center bg-gradient-to-br from-indigo-50 to-purple-50">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
+            <div class="lg:w-1/2 space-y-8">
+                <span class="px-4 py-1.5 bg-indigo-100 text-indigo-700 rounded-full text-sm font-bold tracking-wide">🎓
+                    INDIA'S SMART QUIZ PLATFORM</span>
+                <h1 class="text-7xl font-black leading-tight">Learn Smarter. <span class="text-indigo-600">Practice
+                        Daily.</span> Achieve More.</h1>
+                <p class="text-xl text-slate-600 leading-relaxed">Master Programming, Aptitude, CS, and Logic through
+                    interactive quizzes, brain puzzles, and daily challenges.</p>
+                <div class="flex gap-4">
+                    <a href="/signup"
+                        class="px-8 py-4 bg-indigo-600 text-white rounded-2xl font-bold text-lg hover:shadow-2xl hover:scale-105 transition-all">Start
+                        Learning Free</a>
+                </div>
+            </div>
+            <div class="lg:w-1/2 glass p-4 rounded-[2.5rem] shadow-2xl">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000"
+                    class="rounded-[2rem] w-full" alt="Dashboard">
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-5xl font-black text-center mb-16">Everything You Need To Learn Better</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                {% for f in [
+                ['zap', 'Daily Challenges', 'Win XP and keep your streak alive.'],
+                ['swords', 'Practice Arena', 'Unlimited practice to hone skills.'],
+                ['puzzle', 'Puzzle Zone', 'Logical brain training.'],
+                ['trophy', 'Leaderboard', 'Compete globally.'],
+                ['award', 'Achievements', 'Earn badges and certificates.'],
+                ['bar-chart', 'Smart Analytics', 'Detailed performance tracking.']
+                ] %}
+                <div class="glass p-8 rounded-[2rem] border card-hover">
+                    <div
+                        class="w-14 h-14 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600 mb-6">
+                        <i data-lucide="{{ f[0] }}"></i></div>
+                    <h3 class="text-2xl font-bold mb-4">{{ f[1] }}</h3>
+                    <p class="text-slate-600">{{ f[2] }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section id="languages" class="py-20 px-6 bg-slate-100">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-5xl font-black text-center mb-16">Explore Languages & Subjects</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                {% for lang in ['Python', 'Java', 'JavaScript', 'SQL', 'AI', 'Algorithms'] %}
+                <div class="glass p-6 rounded-2xl text-center border card-hover">
+                    <i data-lucide="code" class="w-10 h-10 mx-auto text-indigo-600 mb-4"></i>
+                    <h4 class="font-bold">{{ lang }}</h4>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="py-20 px-6 bg-slate-50">
+        <div class="max-w-7xl mx-auto space-y-16">
+            <div class="text-center space-y-4">
+                <h2 class="text-5xl font-black">Why QuizMaster?</h2>
+                <p class="text-xl text-slate-600 max-w-2xl mx-auto">
+                    QuizMaster is more than just a quiz website. It is a complete learning ecosystem designed to help
+                    students practice consistently, track their progress, compete with others, and prepare for
+                    interviews, placements, and competitive exams through an engaging gamified experience.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="glass p-8 rounded-[2rem] border hover:border-indigo-500 transition-all card-hover relative">
+                    <span
+                        class="absolute top-6 right-6 px-3 py-1 bg-purple-100 text-purple-700 text-[10px] font-bold rounded-full">Coming
+                        Soon</span>
+                    <div
+                        class="w-14 h-14 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600 mb-6">
+                        <i data-lucide="bot"></i></div>
+                    <h3 class="text-2xl font-bold mb-4">AI-Powered Recommendations</h3>
+                    <p class="text-slate-600">Analyze user performance and recommend quizzes, practice sessions, and
+                        learning paths based on strengths and weaknesses.</p>
+                </div>
+
+                <div class="glass p-8 rounded-[2rem] border hover:border-indigo-500 transition-all card-hover">
+                    <div
+                        class="w-14 h-14 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600 mb-6">
+                        <i data-lucide="gamepad-2"></i></div>
+                    <h3 class="text-2xl font-bold mb-4">Gamified Learning</h3>
+                    <p class="text-slate-600 mb-4">Earn XP, unlock achievements, maintain daily streaks, level up your
+                        profile, and climb the global leaderboard.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2 py-1 bg-slate-200 rounded-lg text-[10px] font-bold">XP System</span>
+                        <span class="px-2 py-1 bg-slate-200 rounded-lg text-[10px] font-bold">Badges</span>
+                    </div>
+                </div>
+
+                <div class="glass p-8 rounded-[2rem] border hover:border-indigo-500 transition-all card-hover">
+                    <div
+                        class="w-14 h-14 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600 mb-6">
+                        <i data-lucide="trending-up"></i></div>
+                    <h3 class="text-2xl font-bold mb-4">Smart Progress Tracking</h3>
+                    <p class="text-slate-600">Monitor your learning journey with interactive analytics, score history,
+                        study time, and performance trends.</p>
+                    <div class="mt-4 h-2 w-full bg-slate-200 rounded-full overflow-hidden">
+                        <div class="h-full bg-indigo-600 w-3/4"></div>
+                    </div>
+                </div>
+
+                <div class="glass p-8 rounded-[2rem] border hover:border-indigo-500 transition-all card-hover">
+                    <div
+                        class="w-14 h-14 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600 mb-6">
+                        <i data-lucide="medal"></i></div>
+                    <h3 class="text-2xl font-bold mb-4">Certificates & Recognition</h3>
+                    <p class="text-slate-600">Complete learning milestones and unlock professional certificates and
+                        achievement badges for your profile.</p>
+                </div>
+
+                <div class="glass p-8 rounded-[2rem] border hover:border-indigo-500 transition-all card-hover">
+                    <div
+                        class="w-14 h-14 bg-indigo-100 rounded-2xl flex items-center justify-center text-indigo-600 mb-6">
+                        <i data-lucide="rocket"></i></div>
+                    <h3 class="text-2xl font-bold mb-4">Built for Future Success</h3>
+                    <p class="text-slate-600">Prepare for campus placements, coding interviews, competitive exams, and
+                        technical assessments.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 pt-10">
+                <div class="glass p-6 rounded-2xl text-center">
+                    <h4 class="text-4xl font-black text-indigo-600">15K+</h4>
+                    <p class="font-bold text-slate-500">Active Students</p>
+                </div>
+                <div class="glass p-6 rounded-2xl text-center">
+                    <h4 class="text-4xl font-black text-indigo-600">5K+</h4>
+                    <p class="font-bold text-slate-500">Interactive Quizzes</p>
+                </div>
+                <div class="glass p-6 rounded-2xl text-center">
+                    <h4 class="text-4xl font-black text-indigo-600">250+</h4>
+                    <p class="font-bold text-slate-500">Achievements</p>
+                </div>
+                <div class="glass p-6 rounded-2xl text-center">
+                    <h4 class="text-4xl font-black text-indigo-600">98%</h4>
+                    <p class="font-bold text-slate-500">Student Satisfaction</p>
+                </div>
+            </div>
+
+            <div
+                class="bg-gradient-to-r from-indigo-900 to-purple-900 rounded-[3rem] p-16 text-center text-white shadow-2xl">
+                <h2 class="text-4xl font-black mb-4">Ready to become the next QuizMaster?</h2>
+                <p class="text-indigo-200 mb-10 text-lg max-w-lg mx-auto">Start your learning journey today and join
+                    thousands of students improving their skills.</p>
+                <div class="flex justify-center gap-4">
+                    <a href="/signup"
+                        class="px-8 py-4 bg-white text-indigo-900 rounded-2xl font-black hover:scale-105 transition-transform">Create
+                        Free Account</a>
+                    <a href="#features"
+                        class="px-8 py-4 bg-white/10 text-white rounded-2xl font-bold hover:bg-white/20 transition-all">Explore
+                        Features</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            nav.classList.toggle('glass', window.scrollY > 50);
+
+            // Scroll Spy
+            document.querySelectorAll('section').forEach(sec => {
+                const top = window.scrollY;
+                const offset = sec.offsetTop - 150;
+                if (top >= offset && top < offset + sec.offsetHeight) {
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active-nav');
+                        if (link.getAttribute('href') === '#' + sec.id) link.classList.add('active-nav');
+                    });
+                }
+            });
+        });
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

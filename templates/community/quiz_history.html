@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}
+Quiz History
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto space-y-12 pb-20 animate-[fadeInUp_0.5s_ease-out]">
+
+    <section
+        class="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-indigo-900 via-purple-800 to-indigo-700 p-8 md:p-12 text-white shadow-2xl">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10">
+        </div>
+        <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="max-w-xl">
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-4">📜 Quiz History</h1>
+                <p class="text-indigo-100 text-lg">Review every quiz you've attempted, analyze your performance, track
+                    improvements and continue your learning journey.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="glass !bg-white/10 !border-white/20 p-4 rounded-2xl text-center min-w-[140px]">
+                    <div class="text-2xl font-black">248</div>
+                    <div class="text-indigo-200 text-[10px] font-bold uppercase tracking-wider">Attempts</div>
+                </div>
+                <div class="glass !bg-white/10 !border-white/20 p-4 rounded-2xl text-center min-w-[140px]">
+                    <div class="text-2xl font-black">91%</div>
+                    <div class="text-indigo-200 text-[10px] font-bold uppercase tracking-wider">Avg Score</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        <div class="glass p-4 rounded-xl border border-slate-100 dark:border-slate-700 text-center">
+            <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">Passed</p>
+            <h3 class="text-xl font-black text-green-500">226</h3>
+        </div>
+        <div class="glass p-4 rounded-xl border border-slate-100 dark:border-slate-700 text-center">
+            <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">Failed</p>
+            <h3 class="text-xl font-black text-red-500">22</h3>
+        </div>
+        <div class="glass p-4 rounded-xl border border-slate-100 dark:border-slate-700 text-center">
+            <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">Best</p>
+            <h3 class="text-xl font-black">100%</h3>
+        </div>
+        <div class="glass p-4 rounded-xl border border-slate-100 dark:border-slate-700 text-center">
+            <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">Streak</p>
+            <h3 class="text-xl font-black text-orange-500">18 Days</h3>
+        </div>
+        <div class="glass p-4 rounded-xl border border-slate-100 dark:border-slate-700 text-center">
+            <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">XP Earned</p>
+            <h3 class="text-xl font-black text-purple-600">18.4K</h3>
+        </div>
+        <div class="glass p-4 rounded-xl border border-slate-100 dark:border-slate-700 text-center">
+            <p class="text-slate-400 text-[10px] font-bold uppercase mb-1">Study Time</p>
+            <h3 class="text-xl font-black">132h</h3>
+        </div>
+    </section>
+
+    <section
+        class="glass bg-white dark:bg-slate-800 p-6 rounded-[2rem] border border-slate-100 dark:border-slate-700 flex flex-wrap gap-4 items-center">
+        <div class="relative flex-1 min-w-[200px]">
+            <i data-lucide="search" class="absolute left-4 top-3.5 w-5 h-5 text-slate-400"></i>
+            <input type="text" placeholder="Search by quiz title..."
+                class="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-slate-900 border-none rounded-xl text-sm focus:ring-2 focus:ring-purple-500 outline-none">
+        </div>
+        <select class="bg-slate-100 dark:bg-slate-900 border-none rounded-xl px-4 py-3 text-sm font-bold">
+            <option>Category</option>
+            <option>Python</option>
+        </select>
+        <select class="bg-slate-100 dark:bg-slate-900 border-none rounded-xl px-4 py-3 text-sm font-bold">
+            <option>Difficulty</option>
+            <option>Advanced</option>
+        </select>
+        <button class="px-6 py-3 bg-primary text-white rounded-xl font-bold text-sm shadow-md hover:bg-indigo-600">Apply
+            Filters</button>
+    </section>
+
+    <section class="space-y-8">
+        <h2 class="text-2xl font-bold">Recent Attempts</h2>
+        <div class="space-y-6">
+            <div
+                class="glass p-6 rounded-[2rem] border border-slate-100 dark:border-slate-700 flex items-center gap-6 hover:shadow-lg transition-all">
+                <div
+                    class="w-16 h-16 rounded-2xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 font-black text-xl">
+                    100%</div>
+                <div class="flex-1">
+                    <h3 class="font-bold text-lg">Python Fundamentals</h3>
+                    <p class="text-xs text-slate-500 uppercase font-bold">Python • Beginner • 15 Mins</p>
+                </div>
+                <div class="text-right">
+                    <p class="font-bold text-green-500">Passed</p>
+                    <p class="text-xs text-slate-400">June 26, 2026</p>
+                </div>
+                <button
+                    class="px-4 py-2 bg-slate-100 dark:bg-slate-700 rounded-lg text-sm font-bold hover:bg-slate-200">View
+                    Result</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="glass p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700">
+            <h3 class="font-bold mb-6">Score Progress</h3>
+            <div class="h-64"><canvas id="scoreChart"></canvas></div>
+        </div>
+        <div class="glass p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700">
+            <h3 class="font-bold mb-6">Category Performance</h3>
+            <div class="h-64"><canvas id="catChart"></canvas></div>
+        </div>
+    </section>
+
+    <section class="glass p-8 rounded-[2rem] border border-slate-100 dark:border-slate-700 text-center">
+        <h3 class="font-bold mb-6 text-left">Study Activity Calendar</h3>
+        <div class="grid grid-cols-[repeat(52,minmax(0,1fr))] gap-1">
+            {% for i in range(365) %}
+            <div class="heatmap-cell bg-slate-100 dark:bg-slate-900 rounded-sm hover:bg-purple-400 transition-colors">
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const opts = { responsive: true, maintainAspectRatio: false };
+    new Chart(document.getElementById('scoreChart'), { type: 'line', data: { labels: ['W1', 'W2', 'W3', 'W4'], datasets: [{ data: [70, 80, 85, 91], borderColor: '#6366f1', fill: true }] }, options: opts });
+    new Chart(document.getElementById('catChart'), { type: 'radar', data: { labels: ['Py', 'Java', 'SQL', 'OS', 'Net'], datasets: [{ data: [95, 88, 92, 85, 90], backgroundColor: 'rgba(99, 102, 241, 0.2)', borderColor: '#6366f1' }] }, options: opts });
+    lucide.createIcons();
+</script>
+{% endblock %}
