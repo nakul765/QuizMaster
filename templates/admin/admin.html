@@ -161,10 +161,10 @@
         <h2 class="text-xl font-black mb-6">Create New Quiz</h2>
         <form action="/add_quiz" method="POST" id="quizForm" class="space-y-4">
             <input type="text" name="title" placeholder="Quiz Title"
-                class="w-full p-3 rounded-xl bg-slate-100 border outline-none">
+                class="w-full p-3 rounded-xl bg-slate-100 border outline-none" required>
             <textarea name="description" placeholder="Description"
-                class="w-full p-3 rounded-xl bg-slate-100 border"></textarea>
-            <select name="category" class="w-full p-3 rounded-xl bg-slate-100 border">
+                class="w-full p-3 rounded-xl bg-slate-100 border" required></textarea>
+            <select name="category" class="w-full p-3 rounded-xl bg-slate-100 border" required>
                 <option value="Programming">Programming</option>
                 <option value="Mathematics">Mathematics</option>
                 <option value="Science">Science</option>
@@ -172,11 +172,11 @@
                 <option value="English">English</option>
                 <option value="GK">GK</option>
             </select>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 gap-4"> required
                 <input type="number" name="time_limit" placeholder="Time (Min)"
-                    class="p-3 rounded-xl bg-slate-100 border">
+                    class="p-3 rounded-xl bg-slate-100 border" required>
                 <input type="number" name="xp_reward" placeholder="XP Reward"
-                    class="p-3 rounded-xl bg-slate-100 border">
+                    class="p-3 rounded-xl bg-slate-100 border" required>
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <input type="number" name="coins" placeholder="Coins" class="p-3 rounded-xl bg-slate-100 border">
@@ -203,22 +203,20 @@
                 class="w-full p-3 rounded-xl bg-slate-100 border outline-none"></textarea>
             <div class="grid grid-cols-2 gap-4">
                 <input type="text" name="optiona" id="formOptionA" placeholder="Option A"
-                    class="p-3 rounded-xl bg-slate-100 border outline-none">
+                    class="p-3 rounded-xl bg-slate-100 border outline-none" required>
                 <input type="text" name="optionb" id="formOptionB" placeholder="Option B"
-                    class="p-3 rounded-xl bg-slate-100 border outline-none">
+                    class="p-3 rounded-xl bg-slate-100 border outline-none" required>
                 <input type="text" name="optionc" id="formOptionC" placeholder="Option C"
-                    class="p-3 rounded-xl bg-slate-100 border outline-none">
+                    class="p-3 rounded-xl bg-slate-100 border outline-none" required>
                 <input type="text" name="optiond" id="formOptionD" placeholder="Option D"
-                    class="p-3 rounded-xl bg-slate-100 border outline-none">
+                    class="p-3 rounded-xl bg-slate-100 border outline-none" required>
             </div>
-            <select name="answer" id="formAnswerSelect" class="w-full p-3 rounded-xl bg-slate-100 border outline-none">
+            <select name="answer" id="formAnswerSelect" class="w-full p-3 rounded-xl bg-slate-100 border outline-none" required>
                 <option value="optiona">Option A</option>
                 <option value="optionb">Option B</option>
                 <option value="optionc">Option C</option>
                 <option value="optiond">Option D</option>
             </select>
-            <textarea name="explanation" id="formExplanationText" placeholder="Explanation Text"
-                class="w-full p-3 rounded-xl bg-slate-100 border outline-none"></textarea>
             <div class="flex justify-end gap-3">
                 <button type="button" onclick="toggleModal('questionModal')" class="px-4 py-2 font-bold">Cancel</button>
                 <button type="submit" id="formSubmitActionBtn"
@@ -233,31 +231,29 @@
     <div class="glass w-full max-w-xl p-6 md:p-8 rounded-3xl max-h-[90vh] overflow-y-auto">
         <h2 class="text-xl font-black mb-6">Update Question</h2>
         <form action="/update_question" method="POST" id="updateQuestionForm" class="space-y-4">
-            <input type="hidden" name="quiz_id" value="{{ selected_quiz.id if selected_quiz else '' }}">
+            <input type="hidden" name="quiz_id" value="{{ selected_quiz.id if selected_quiz else '' }}" required>
 
-            <input type="hidden" name="question_id" id="updateFormQuestionIdField" value="">
+            <input type="hidden" name="question_id" id="updateFormQuestionIdField" value="" required>
 
             <textarea name="question" id="updateFormQuestionText" placeholder="Question Text"
-                class="w-full p-3 rounded-xl bg-slate-100 border outline-none"></textarea>
+                class="w-full p-3 rounded-xl bg-slate-100 border outline-none" required></textarea>
             <div class="grid grid-cols-2 gap-4">
                 <input type="text" name="optiona" id="updateFormOptionA" placeholder="Option A"
-                    class="p-3 rounded-xl bg-slate-100 border outline-none">
+                    class="p-3 rounded-xl bg-slate-100 border outline-none" required>
                 <input type="text" name="optionb" id="updateFormOptionB" placeholder="Option B"
-                    class="p-3 rounded-xl bg-slate-100 border outline-none">
+                    class="p-3 rounded-xl bg-slate-100 border outline-none" required>
                 <input type="text" name="optionc" id="updateFormOptionC" placeholder="Option C"
-                    class="p-3 rounded-xl bg-slate-100 border outline-none">
+                    class="p-3 rounded-xl bg-slate-100 border outline-none" required>
                 <input type="text" name="optiond" id="updateFormOptionD" placeholder="Option D"
-                    class="p-3 rounded-xl bg-slate-100 border outline-none">
+                    class="p-3 rounded-xl bg-slate-100 border outline-none" required>
             </div>
             <select name="answer" id="updateFormAnswerSelect"
-                class="w-full p-3 rounded-xl bg-slate-100 border outline-none">
+                class="w-full p-3 rounded-xl bg-slate-100 border outline-none" required>
                 <option value="optiona">Option A</option>
                 <option value="optionb">Option B</option>
                 <option value="optionc">Option C</option>
                 <option value="optiond">Option D</option>
             </select>
-            <textarea name="explanation" id="updateFormExplanationText" placeholder="Explanation Text"
-                class="w-full p-3 rounded-xl bg-slate-100 border outline-none"></textarea>
             <div class="flex justify-end gap-3">
                 <button type="button" onclick="toggleModal('updateQuestionModal')"
                     class="px-4 py-2 font-bold">Cancel</button>
