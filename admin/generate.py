@@ -10,9 +10,13 @@ def add_quiz():
         title = request.form['title'].title().strip()
         description = request.form['description'].lower().strip()
         category = request.form['category']
-        time_limit = request.form['time_limit']
-        xp_reward = request.form['xp_reward'] 
-        coins = request.form['coins']
+
+        try:
+            time_limit = int(request.form['time_limit'])
+            xp_reward = int(request.form['xp_reward'])
+            coins = int(request.form.get('coins') or 0)
+        except (ValueError, TypeError):
+            return redirect('/admin')
 
         new_quiz = Quizes(title=title,
                         description=description,
@@ -52,7 +56,11 @@ def add_question():
         optionc = request.form['optionc']
         optiond = request.form['optiond']
         answer = request.form['answer']
-        quiz_id = int(request.form['quiz_id'])
+
+        try:
+            quiz_id = int(request.form['quiz_id'])
+        except (ValueError, TypeError, KeyError):
+            return redirect('/admin')
 
         if(answer == 'optiona'):
             answer = optiona
@@ -94,7 +102,11 @@ def update_question():
         optionc = request.form["optionc"]
         optiond = request.form["optiond"]
         answer = request.form["answer"]
-        quiz_id = int(request.form["quiz_id"])
+
+        try:
+            quiz_id = int(request.form["quiz_id"])
+        except (ValueError, TypeError, KeyError):
+            return redirect('/admin')
 
         questions.question = question
         questions.optiona = optiona
